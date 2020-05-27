@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.cyfersystems.learnlarivaar" version="1.0.11" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Learn Larivaar</name>
+    <description>
+        An application to help learn Larivaar through Sehaj Paatth.
+    </description>
+    <author email="techsupport@khalisfoundation.org" href="http://www.khalisfoundation.org">
+        Khalis Foundation
+    </author>
+    <content src="index.html" />
+    <access origin="*" />
+    <preference name="WindowsStoreIdentityName" value="KhalisFoundation.LearnLarivaar" />
+    <preference name="windows-target-version" value="10.0" />
+    <preference name="webviewbounce" value="false" />
+    <preference name="DisallowOverscroll" value="true" />
+    <preference name="StatusBarOverlaysWebView" value="false" />
+</widget>
