@@ -215,7 +215,6 @@ function setAng(set_ang, store) {
   } else {
     endpoint = local;
   }
-  // endpoint = api;
   $.get(endpoint, function(data) {
     var shabads;
     if (isOnline) {
