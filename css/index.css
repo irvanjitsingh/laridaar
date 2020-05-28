@@ -127,7 +127,7 @@ a.corner_nav {
 }
 
 #larreevaar_assistance .on span:nth-of-type(2n) {
-  color: #F37B20;
+  color: #FCCF00;
 }
 
 .setting_row_2col {
@@ -147,7 +147,7 @@ a.corner_nav {
 }
 
 .setting_2col.cur {
-  color: #F37B20;
+  color: #FCCF00;
 }
 
 .setting_more_info {
@@ -262,7 +262,7 @@ div.ui-datepicker {
 }
 
 #paatth.larreevaar.larreevaar_assistance span:nth-of-type(2n) {
-  color: #F37B20;
+  color: #FCCF00;
 }
 
 #paatth i {
