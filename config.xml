@@ -4,9 +4,6 @@
     <description>
         An application to help learn Larivaar through Sehaj Paatth.
     </description>
-    <author email="techsupport@khalisfoundation.org" href="http://www.khalisfoundation.org">
-        Khalis Foundation
-    </author>
     <content src="index.html" />
     <access origin="*" />
     <preference name="WindowsStoreIdentityName" value="KhalisFoundation.LearnLarivaar" />
