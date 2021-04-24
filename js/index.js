@@ -36,16 +36,10 @@ function onDeviceReady() {
   //Override back button
   init();
   document.addEventListener("backbutton", function(){onBackButton(false);}, false);
-  document.addEventListener("offline", onOffline, false);
-  document.addEventListener("online", onOnline, false);
 }
 
 function init() {
-  var network = navigator.connection.type;
-  isOnline = (network !== Connection.UNKNOWN || network !== Connection.NONE);
-  if (isOnline) {
-    console.log("IS ONLINE");
-  }
+  isOnline = false;
   setAng(ang, false);
   if (samaaptee) {
     calculateDailyAngs(samaaptee, ang);
@@ -207,38 +201,45 @@ function setAng(set_ang, store) {
   $(".plus1").data("ang", plus1);
   var newPaatth = '';
   var endpoint;
-  isOnline = false;
+  var network = navigator.connection.type;
+  isOnline = (network !== Connection.UNKNOWN && network !== Connection.NONE);
   var api = "https://api.banidb.com/v2/angs/" + ang + "/G";
   var local = "paatth/" + ang + ".html"
-  if (isOnline) {
-    endpoint = api;
-  } else {
+  // if (isOnline) {
+  //   endpoint = api;
+  // } else {
     endpoint = local;
-  }
+  // }
   $.get(endpoint, function(data) {
     var shabads;
-    if (isOnline) {
-      var lines = [];
-      $.each(data.page, function(index, line){
-        lines.push(line.verse.unicode);
-      });
-      var allLines = lines.join(' ');
-      shabads = allLines.split(' ');
-    } else {
+    // if (isOnline) {
+    //   var lines = [];
+    //   $.each(data.page, function(index, line){
+    //     lines.push(line.verse.unicode);
+    //   });
+    //   var allLines = lines.join(' ');
+    //   shabads = allLines.split(' ');
+    // } else {
       shabads = data
       .replace(/\./g, '')
       .replace(/,/g, '')
       .replace(/;/g, '')
       .split(' ');
-    }
+    // }
     $.each(shabads, function(index,val){
-      if (val.indexOf('॥') !== -1) {
+      if(val.indexOf('॥') !== -1) {
         tag = "i";
       } else {
         tag = "span";
       }
       newPaatth += "<" + tag + ">" + val + (tag == "i" ? " " : "") + "</" + tag + "> ";
     });
+    newPaatth += "<span>";
+    for (var i = 0; i < 120; i++) {
+      newPaatth += "&nbsp;";
+    }
+    newPaatth += "</span>";
+    // Add end-of-ang line break
     $("#paatth").html(newPaatth);
     //Check for bookmark, insert it and scroll to
     if (bookmark_ang == ang && bookmark_index > -1) {
@@ -264,16 +265,6 @@ function setAng(set_ang, store) {
     //Check for bookmark, insert it and scroll to
     if (bookmark_ang == ang && bookmark_index > -1) $("#paatth *").eq(bookmark_index).after($("<i></i>").addClass("fa fa-bookmark"));
   }
-}
-
-function onOnline() {
-  isOnline = true;
-  console.log("online event fired");
-}
-
-function onOffline() {
-  isOnline = false;
-  console.log("offline event fired");
 }
 
 function onBackButton(esc_button) {

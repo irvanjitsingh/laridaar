@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.cyfersystems.learnlarivaar" version="1.0.11" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>laridaar.com</name>
+<widget id="com.gursevak.sehajpaath" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Sehaj Paath</name>
     <description>
-        An application to help learn Laridaar through Sehaj Paatth.
+        Practice reading in larivaar through Sehaj Paath
     </description>
     <content src="index.html" />
     <access origin="*" />
