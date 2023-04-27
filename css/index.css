@@ -37,9 +37,10 @@ body {
 }
 
 @font-face {
-  font-family: AnmolUni;
-  src: url("../fonts/anmoluni.otf");
+  font-family: Akaash;
+  src: url("../fonts/Akaash.ttf");
 }
+
 * {
   box-sizing: border-box;
 }
@@ -119,7 +120,7 @@ a.corner_nav {
 }
 
 #larreevaar_assistance {
-  font-family: AnmolUni;
+  font-family: Akaash;
   font-size: 13px;
   right: 0px;
   line-height: 15px;
@@ -242,10 +243,16 @@ div.ui-datepicker {
 }
 
 #paatth {
-  font-family: AnmolUni;
+  font-family: Akaash;
   height: 100%;
   line-height: 1.4em;
   padding: 10px 0;
+}
+
+#paatth .linebreak {
+  text-align: center;
+  word-break: break-all;
+  /* overflow-wrap: break-word; */
 }
 
 #paatth:after {
@@ -263,6 +270,42 @@ div.ui-datepicker {
 
 #paatth.larreevaar.larreevaar_assistance span:nth-of-type(2n) {
   color: #2AAAE2;
+}
+
+#paatth.vishrams .large-pause {
+  color: #ff8400;
+}
+
+#paatth.vishrams.larreevaar.larreevaar_assistance .large-pause {
+  color: #ff8400;
+}
+
+.large-pause-color {
+  color: #ff8400;
+}
+
+#paatth.vishrams .medium-pause {
+  color: #ffae00;
+}
+
+#paatth.vishrams.larreevaar.larreevaar_assistance .medium-pause {
+  color: #ffae00;
+}
+
+.medium-pause-color {
+  color: #ffae00;
+}
+
+#paatth.vishrams .small-pause {
+  color: #ffe100;
+}
+
+#paatth.vishrams.larreevaar.larreevaar_assistance .small-pause {
+  color: #ffe100;
+}
+
+.small-pause-color {
+  color: #ffe100;
 }
 
 #paatth i {
@@ -449,7 +492,7 @@ body.dark #larreevaar_assistance::after {
 
 body .lang_pa {
   display: none;
-  font-family: AnmolUni, "HelveticaNeue-Light", "HelveticaNeue", Helvetica, Arial, sans-serif;
+  font-family: Akaash, "HelveticaNeue-Light", "HelveticaNeue", Helvetica, Arial, sans-serif;
 }
 
 body.lang_pa .lang_pa {

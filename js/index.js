@@ -8,9 +8,11 @@ var today_date            = window.localStorage["today_date"]             || nul
 var today_start           = window.localStorage["today_start"]            || null;
 var today_read            = ang - today_start;
 var daily_total           = 0;
-var swipe_nav             = window.localStorage["swipe_nav"]              || 1;
+var swipe_nav             = window.localStorage["swipe_nav"]              || 0;
 var larreevaar            = window.localStorage["larreevaar"]             || 1;
 var larreevaar_assistance = window.localStorage["larreevaar_assistance"]  || 0;
+var linebreak             = window.localStorage["linebreak"]              || 0;
+var vishrams              = window.localStorage["vishrams"]               || 0;
 var lang                  = "en";//window.localStorage["lang"]                   || "en";
 var bookmark_index        = window.localStorage["bookmark_index"]         || null;
 var bookmark_ang          = window.localStorage["bookmark_ang"]           || null;
@@ -63,8 +65,12 @@ function init() {
   $("#paatth").css("font-size", font_size + "px");
   $(".setting[data-setting='larreevaar']").data("on", larreevaar);
   $("#larreevaar_assistance").data("on", larreevaar_assistance);
+  $("#vishrams").data("on", vishrams);
+  $("#linebreak").data("on", linebreak);
   if (larreevaar == 1)            $("body, #paatth").addClass("larreevaar");
+  if (linebreak == 1)            $("body, #paatth").addClass("linebreak");
   if (larreevaar_assistance == 1) $("#paatth, #larreevaar_assistance").addClass("larreevaar_assistance");
+  if (vishrams == 1)              $("#paatth, #vishrams").addClass("vishrams");
   $(".setting[data-setting='swipe_nav']").data("on", swipe_nav);
   $(".setting[data-setting='dark']").data("on", dark);
   if (dark == 1) {
@@ -200,45 +206,52 @@ function setAng(set_ang, store) {
   $(".minus1").data("ang", minus1);
   $(".plus1").data("ang", plus1);
   var newPaatth = '';
+  var singleSpanPaatth = '';
   var endpoint;
-  var network = navigator.connection.type;
-  isOnline = (network !== Connection.UNKNOWN && network !== Connection.NONE);
-  var api = "https://api.banidb.com/v2/angs/" + ang + "/G";
   var local = "paatth/" + ang + ".html"
-  // if (isOnline) {
-  //   endpoint = api;
-  // } else {
     endpoint = local;
-  // }
   $.get(endpoint, function(data) {
     var shabads;
-    // if (isOnline) {
-    //   var lines = [];
-    //   $.each(data.page, function(index, line){
-    //     lines.push(line.verse.unicode);
-    //   });
-    //   var allLines = lines.join(' ');
-    //   shabads = allLines.split(' ');
-    // } else {
+    if ($("body").hasClass("linebreak")) {
       shabads = data
       .replace(/\./g, '')
       .replace(/,/g, '')
       .replace(/;/g, '')
-      .split(' ');
-    // }
-    $.each(shabads, function(index,val){
-      if(val.indexOf('॥') !== -1) {
-        tag = "i";
-      } else {
-        tag = "span";
-      }
-      newPaatth += "<" + tag + ">" + val + (tag == "i" ? " " : "") + "</" + tag + "> ";
-    });
-    newPaatth += "<span>";
-    for (var i = 0; i < 120; i++) {
-      newPaatth += "&nbsp;";
+      .replace(/ /g, '&#8203;');
+      newPaatth = '<span class="linebreak">' + shabads + '</span>';
+    } else {
+      shabads = data.split(' ');
+      $.each(shabads, function(index,val){
+        lastChar = val.at(-1)
+        if (lastChar == '॥') {
+          tag = 'i';
+          closing_tag = 'i';
+          word = val;
+        } else if (lastChar == ';') {
+          tag = 'span class="large-pause"';
+          closing_tag = 'span';
+          word = val.slice(0,-1);
+        } else if (lastChar == ',') {
+          tag = 'span class="medium-pause"';
+          closing_tag = 'span';
+          word = val.slice(0,-1);
+        } else if (lastChar == '.') {
+          tag = 'span class="small-pause"';
+          closing_tag = 'span';
+          word = val.slice(0,-1);
+        } else {
+          tag = 'span';
+          closing_tag = 'span';
+          word = val;
+        }
+        newPaatth += '<' + tag + '>' + word + (tag == 'i' ? ' ' : '') + '</' + closing_tag + '> ';
+      });
     }
-    newPaatth += "</span>";
+    // newPaatth += "<span>";
+    // for (var i = 0; i < 120; i++) {
+    //   newPaatth += "&nbsp;";
+    // }
+    // newPaatth += "</span>";
     // Add end-of-ang line break
     $("#paatth").html(newPaatth);
     //Check for bookmark, insert it and scroll to
@@ -368,8 +381,26 @@ $(function() {
           $("#paatth").addClass(setting);
           ga('send','event','button','click','assist','on');
           break;
-        case "larreevaar":
+        case "vishrams":
+          $("#paatth").addClass(setting);
+          ga('send','event','button','click','vishrams','on');
+          break;
+        case "linebreak":
+          if ($("#paatth").hasClass("larreevaar")) {
+            $("body, #paatth").removeClass("larreevaar");
+            ga('send','event','setting','change','larreevaar','off');
+          }
           $("body, #paatth").addClass(setting);
+          setAng(ang);
+          ga('send','event','button','click','linebreak','on');
+          break;
+        case "larreevaar":
+          if ($("body").hasClass("linebreak")) {
+            $("body, #paatth").removeClass("linebreak");
+            ga('send','event','setting','change','linebreak','off');
+          }
+          $("body, #paatth").addClass(setting);
+          setAng(ang);
           ga('send','event','setting','change','larreevaar','on');
           break;
         case "swipe_nav":
@@ -403,9 +434,22 @@ $(function() {
           $("#paatth").removeClass(setting);
           ga('send','event','button','click','assist','off');
           break;
-        case "larreevaar":
+        case "vishrams":
+          $("#paatth").removeClass(setting);
+          ga('send','event','button','click','vishrams','off');
+          break;
+        case "linebreak":
+          if ($("#paatth").hasClass("larreevaar")) {
+          }
           $("body, #paatth").removeClass(setting);
-          ga('send','event','setting','change','larreevaar','off');
+          setAng(ang);
+          ga('send','event','button','click','linebreak','off');
+          break;
+        case "larreevaar":
+          if (!$("body").hasClass("linebreak")) {
+            $("body, #paatth").removeClass(setting);
+            ga('send','event','setting','change','larreevaar','off');
+          }
           break;
         case "swipe_nav":
           swipe_nav = 0;
@@ -549,32 +593,49 @@ $(function() {
     }
   });
   $(document).keypress(function(event) {
+    // event.preventDefault();
     if (!$(document.activeElement).is("input")) {
       switch (event.keyCode) {
         //+
         case 43:
+          event.preventDefault();
           $("#zoom_in_button").click();
           break;
         //-
         case 45:
+          event.preventDefault();
           $("#zoom_out_button").click();
           break;
         //a
         case 97:
+          event.preventDefault();
           if ($("#paatth").hasClass("larreevaar")) {
             $("#larreevaar_assistance").click();
           }
           break;
+        //v
+        case 118:
+          event.preventDefault();
+          $("#vishrams").click();
+          break;
+        //L
+        case 76:
+          event.preventDefault();
+          $("#linebreak").click();
+          break;
         //l
         case 108:
+          event.preventDefault();
           $("#larreevaar_setting").click();
           break;
         //m
         case 109:
+          event.preventDefault();
           $("#settings_button").click();
           break;
         //n
         case 110:
+          event.preventDefault();
           $("#night_mode_button").click();
           break;
       }
