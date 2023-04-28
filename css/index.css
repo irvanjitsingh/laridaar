@@ -40,6 +40,12 @@ body {
   font-family: Akaash;
   src: url("../fonts/Akaash.ttf");
 }
+
+@font-face {
+  font-family: GurbaniAkhar;
+  src: url("../fonts/GurbaniAkhar.ttf");
+}
+
 * {
   box-sizing: border-box;
 }
@@ -138,21 +144,18 @@ a.corner_nav {
 #tatkara_legend {
   text-align: center;
   font-size: 20px;
-  border-width:2px;
-  border-style:solid;
-  border-color:#a1a0a0;
 }
 
 .tatkara {
   font-family: "HelveticaNeue-Light", "HelveticaNeue", Helvetica, Arial, sans-serif;
-  font-size: 30px;
-  line-height: 30px;
+  font-size: 20px;
+  line-height: 20px;
 }
 
 .tatkara_row {
   color: #2AAAE2;
-  font-size: 30px;
-  line-height: 30px;
+  font-size: 20px;
+  line-height: 20px;
 }
 
 .tatkara_row a {
@@ -193,7 +196,7 @@ a.corner_nav {
 }
 
 .difficulty-veryhard {
-  color:#af0000
+  color:#ff0000ee
 }
 
 .tatkara tr .size-small {
@@ -310,6 +313,11 @@ div.ui-datepicker {
 .app {
   height: 100%;
   padding: 50px 8px 8px;
+}
+
+#ang {
+  font-family: GurbaniAkhar;
+  width: 75px;
 }
 
 #paatth {

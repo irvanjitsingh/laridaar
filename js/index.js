@@ -257,12 +257,6 @@ function setAng(set_ang, store) {
         newPaatth += spacing + '<' + tag + '>' + word + (tag == 'i' ? ' ' : '') + '</' + closing_tag + '> ' + spacing;
       });
     }
-    // newPaatth += "<span>";
-    // for (var i = 0; i < 120; i++) {
-    //   newPaatth += "&nbsp;";
-    // }
-    // newPaatth += "</span>";
-    // Add end-of-ang line break
     $("#paatth").html(newPaatth);
     //Check for bookmark, insert it and scroll to
     if (bookmark_ang == ang && bookmark_index > -1) {
