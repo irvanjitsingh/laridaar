@@ -1,7 +1,7 @@
 //Settings
 var ang                   = window.localStorage["ang"]                    || 1;
 var font_size             = window.localStorage["font_size"]              || 20;
-var dark                  = window.localStorage["dark"]                   || 0;
+var dark                  = window.localStorage["dark"]                   || 1;
 var samaaptee             = window.localStorage["samaaptee"]              || null;
 var daily                 = window.localStorage["daily"]                  || null;
 var today_date            = window.localStorage["today_date"]             || null;
@@ -193,6 +193,13 @@ function formatDate(date) {
   return "" + year + "-" + month + "-" + day;
 }
 
+function openTatkara() {
+  $.get("paatth/0.html", function(data) {
+    $("#paatth").html(data);
+    console.log(data);
+  });
+}
+
 function setAng(set_ang, store) {
   store = typeof store !== 'undefined' ? store : true;
   //Make sure it's an Ang within the proper range or set to 1
@@ -206,10 +213,7 @@ function setAng(set_ang, store) {
   $(".minus1").data("ang", minus1);
   $(".plus1").data("ang", plus1);
   var newPaatth = '';
-  var singleSpanPaatth = '';
-  var endpoint;
-  var local = "paatth/" + ang + ".html"
-    endpoint = local;
+  var endpoint = "paatth/" + ang + ".html";
   $.get(endpoint, function(data) {
     var shabads;
     if ($("body").hasClass("linebreak")) {
@@ -221,7 +225,13 @@ function setAng(set_ang, store) {
       newPaatth = '<span class="linebreak">' + shabads + '</span>';
     } else {
       shabads = data.split(' ');
+      spacing = '';
       $.each(shabads, function(index,val){
+        if (val == 'ੴ') {
+          spacing = '<i>&ensp;</i>';
+        } else {
+          spacing = '';
+        }
         lastChar = val.at(-1)
         if (lastChar == '॥') {
           tag = 'i';
@@ -244,7 +254,7 @@ function setAng(set_ang, store) {
           closing_tag = 'span';
           word = val;
         }
-        newPaatth += '<' + tag + '>' + word + (tag == 'i' ? ' ' : '') + '</' + closing_tag + '> ';
+        newPaatth += spacing + '<' + tag + '>' + word + (tag == 'i' ? ' ' : '') + '</' + closing_tag + '> ' + spacing;
       });
     }
     // newPaatth += "<span>";
@@ -319,20 +329,17 @@ $(function() {
   $("#settings_button").click(function() {
     $('.button-collapse').sideNav('show');
     /*$('#settings_button').toggleClass('selected');*/
-    ga('send','event','button','click','settings');
   });
   //FONT SIZE
   $(".bigger").click(function () {
     font_size += 1;
     $("#paatth").css("font-size", font_size + "px");
     window.localStorage["font_size"] = font_size;
-    ga('send','event','setting','change','zoom','in');
   });
   $(".smaller").click(function () {
     font_size -= 1;
     $("#paatth").css("font-size", font_size + "px");
     window.localStorage["font_size"] = font_size;
-    ga('send','event','setting','change','zoom','out');
   });
   //CHANGE ANG
   $(".ang").blur(function() {
@@ -353,16 +360,13 @@ $(function() {
         calculateDailyAngs(samaaptee, ang);
       }
       updateProgress();
-      ga('send','event','submit','ang',ang);
       event.preventDefault();
     }
   });
   $("#navigation a.minus1, #navigation a.plus1").click(function () {
     setAng($(this).data("ang"));
     if ($(this).hasClass('minus1')) {
-      ga('send','event','button','click','nav arrows','prev');
     } else {
-      ga('send','event','button','click','nav arrows','next');
     }
     updateProgress();
   });
@@ -379,47 +383,37 @@ $(function() {
         case "larreevaar_assistance":
           $(this).addClass(setting);
           $("#paatth").addClass(setting);
-          ga('send','event','button','click','assist','on');
           break;
         case "vishrams":
           $("#paatth").addClass(setting);
-          ga('send','event','button','click','vishrams','on');
           break;
         case "linebreak":
           if ($("#paatth").hasClass("larreevaar")) {
             $("body, #paatth").removeClass("larreevaar");
-            ga('send','event','setting','change','larreevaar','off');
           }
           $("body, #paatth").addClass(setting);
           setAng(ang);
-          ga('send','event','button','click','linebreak','on');
           break;
         case "larreevaar":
           if ($("body").hasClass("linebreak")) {
             $("body, #paatth").removeClass("linebreak");
-            ga('send','event','setting','change','linebreak','off');
           }
           $("body, #paatth").addClass(setting);
           setAng(ang);
-          ga('send','event','setting','change','larreevaar','on');
           break;
         case "swipe_nav":
           swipe_nav = 1;
-          ga('send','event','setting','change','swipe','on');
           break;
         case "dark":
           $("body").addClass(setting);
           StatusBar.backgroundColorByHexString('#222');
           StatusBar.styleLightContent();
-          ga('send','event','setting','change','dark','on');
           break;
         case "keep_awake":
           window.plugins.insomnia.keepAwake();
-          ga('send','event','setting','change','keep_awake','on');
           break;
         case "lefthand":
           $("body").addClass(setting);
-          ga('send','event','setting','change','lefthand','on');
           break;
       }
       if ($(this).hasClass("checkbox")) {
@@ -432,42 +426,34 @@ $(function() {
         case "larreevaar_assistance":
           $(this).removeClass(setting);
           $("#paatth").removeClass(setting);
-          ga('send','event','button','click','assist','off');
           break;
         case "vishrams":
           $("#paatth").removeClass(setting);
-          ga('send','event','button','click','vishrams','off');
           break;
         case "linebreak":
           if ($("#paatth").hasClass("larreevaar")) {
           }
           $("body, #paatth").removeClass(setting);
           setAng(ang);
-          ga('send','event','button','click','linebreak','off');
           break;
         case "larreevaar":
           if (!$("body").hasClass("linebreak")) {
             $("body, #paatth").removeClass(setting);
-            ga('send','event','setting','change','larreevaar','off');
           }
           break;
         case "swipe_nav":
           swipe_nav = 0;
-          ga('send','event','setting','change','swipe','off');
           break;
         case "dark":
           $("body").removeClass(setting);
           StatusBar.backgroundColorByHexString('#fff');
           StatusBar.styleDefault();
-          ga('send','event','setting','change','dark','off');
           break;
         case "keep_awake":
           window.plugins.insomnia.allowSleepAgain();
-          ga('send','event','setting','change','keep_awake','off');
           break;
         case "lefthand":
           $("body").removeClass(setting);
-          ga('send','event','setting','change','lefthand','off');
           break;
       }
       if ($(this).hasClass("checkbox")) {
@@ -481,7 +467,6 @@ $(function() {
             return (css.match (/\blang_\S+/g) || []).join(' ');
           });
           $("body").addClass("lang_" + lang);
-          ga('send','event','setting','change','lang',lang);
           window.localStorage["lang"] = lang;
           $(".setting[data-setting='lang']").removeClass("cur");
           $(".setting[data-setting='lang'][data-value='" + lang + "']").addClass("cur");
@@ -562,11 +547,9 @@ $(function() {
         switch(ev.type) {
           case 'swiperight':
             $(".minus1").click();
-            ga('send','event','swipe','right');
             break;
           case "swipeleft":
             $(".plus1").click();
-            ga('send','event','swipe','left');
             break;
         }
       }
@@ -582,12 +565,10 @@ $(function() {
         //Left Arrow
         case 37:
           $(".minus1").click();
-          ga("send","event","keyboard","left");
           break;
         //Right Arrow
         case 39:
           $(".plus1").click();
-          ga("send","event","keyboard","right");
           break;
       }
     }

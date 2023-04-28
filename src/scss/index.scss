@@ -34,7 +34,7 @@ body {
 
 @font-face {
   font-family: Akaash;
-  src: url('../fonts/Akaash.ttf');
+  src: url("../fonts/Akaash.ttf");
 }
 
 * {
@@ -125,6 +125,22 @@ a.corner_nav {
 
 #larreevaar_assistance .on span:nth-of-type(2n) {
   color: #2AAAE2;
+}
+
+#tatkara_title {
+  color:#ffae00;
+}
+
+.tatkara {
+  font-family: "HelveticaNeue-Light", "HelveticaNeue", Helvetica, Arial, sans-serif;
+}
+
+.tatkara_row {
+  color: #2AAAE2;
+}
+
+.tatkara_row a {
+  text-decoration: underline;
 }
 
 .setting_row_2col {
@@ -244,6 +260,12 @@ div.ui-datepicker {
   padding: 10px 0;
 }
 
+#paatth .linebreak {
+  text-align: center;
+  word-break: break-all;
+  /* overflow-wrap: break-word; */
+}
+
 #paatth:after {
   clear: both;
   content: " ";
@@ -269,6 +291,10 @@ div.ui-datepicker {
   color: #ff8400;
 }
 
+.large-pause-color {
+  color: #ff8400;
+}
+
 #paatth.vishrams .medium-pause {
   color: #ffae00;
 }
@@ -277,11 +303,19 @@ div.ui-datepicker {
   color: #ffae00;
 }
 
+.medium-pause-color {
+  color: #ffae00;
+}
+
 #paatth.vishrams .small-pause {
   color: #ffe100;
 }
 
 #paatth.vishrams.larreevaar.larreevaar_assistance .small-pause {
+  color: #ffe100;
+}
+
+.small-pause-color {
   color: #ffe100;
 }
 

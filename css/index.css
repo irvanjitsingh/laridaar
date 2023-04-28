@@ -40,7 +40,6 @@ body {
   font-family: Akaash;
   src: url("../fonts/Akaash.ttf");
 }
-
 * {
   box-sizing: border-box;
 }
@@ -129,6 +128,77 @@ a.corner_nav {
 
 #larreevaar_assistance .on span:nth-of-type(2n) {
   color: #2AAAE2;
+}
+
+#tatkara_title {
+  color:#2AAAE2;
+  text-align: center;
+}
+
+#tatkara_legend {
+  text-align: center;
+  font-size: 20px;
+  border-width:2px;
+  border-style:solid;
+  border-color:#a1a0a0;
+}
+
+.tatkara {
+  font-family: "HelveticaNeue-Light", "HelveticaNeue", Helvetica, Arial, sans-serif;
+  font-size: 30px;
+  line-height: 30px;
+}
+
+.tatkara_row {
+  color: #2AAAE2;
+  font-size: 30px;
+  line-height: 30px;
+}
+
+.tatkara_row a {
+  text-decoration: underline;
+}
+
+.tatkara tr {
+  text-align: left;
+  border-width:2px;
+  border-style:solid;
+  border-color:#a1a0a0;
+}
+
+.tatkara tr .size-normal {
+    font-size: 30px;
+  line-height: 30px;
+}
+
+.tatkara tr .size-small {
+  font-size: 20px;
+  line-height: 30px;
+}
+
+.difficulty-normal {
+  color:#a1a0a0;
+}
+
+.difficulty-easy {
+  color:#66ae00;
+}
+
+.difficulty-medium {
+  color:#ffe100;
+}
+
+.difficulty-hard {
+  color:#ff8400
+}
+
+.difficulty-veryhard {
+  color:#af0000
+}
+
+.tatkara tr .size-small {
+  font-size: 20px;
+  line-height: 30px;
 }
 
 .setting_row_2col {
