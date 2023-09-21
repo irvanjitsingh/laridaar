@@ -194,7 +194,21 @@ function formatDate(date) {
 }
 
 function openTatkara() {
-  $.get("paatth/0.html", function(data) {
+  $.get("paatth/0-tatkara-gurmukhi.html", function(data) {
+    $("#paatth").html(data);
+    console.log(data);
+  });
+}
+
+function openTatkaraEnglish() {
+  $.get("paatth/0-tatkara-english.html", function(data) {
+    $("#paatth").html(data);
+    console.log(data);
+  });
+}
+
+function openAudio() {
+  $.get("paatth/0-audio.html", function(data) {
     $("#paatth").html(data);
     console.log(data);
   });
