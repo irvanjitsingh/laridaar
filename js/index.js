@@ -193,25 +193,26 @@ function formatDate(date) {
   return "" + year + "-" + month + "-" + day;
 }
 
-function openTatkara() {
+function openTatkaraGurmukhi() {
   $.get("paatth/0-tatkara-gurmukhi.html", function(data) {
     $("#paatth").html(data);
-    console.log(data);
   });
 }
 
 function openTatkaraEnglish() {
   $.get("paatth/0-tatkara-english.html", function(data) {
     $("#paatth").html(data);
-    console.log(data);
   });
 }
 
-function openAudio() {
-  $.get("paatth/0-audio.html", function(data) {
+function openTatkaraAudio() {
+  $.get("paatth/0-tatkara-audio.html", function(data) {
     $("#paatth").html(data);
-    console.log(data);
   });
+}
+
+function returnToAng() {
+  location.reload(); 
 }
 
 function setAng(set_ang, store) {
@@ -398,6 +399,7 @@ $(function() {
         case "linebreak":
           if ($("#paatth").hasClass("larreevaar")) {
             $("body, #paatth").removeClass("larreevaar");
+            window.localStorage["larreevaar"] = 0; 
           }
           $("body, #paatth").addClass(setting);
           setAng(ang);
@@ -405,6 +407,7 @@ $(function() {
         case "larreevaar":
           if ($("body").hasClass("linebreak")) {
             $("body, #paatth").removeClass("linebreak");
+            window.localStorage["linebreak"] = 0;
           }
           $("body, #paatth").addClass(setting);
           setAng(ang);

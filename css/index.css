@@ -151,55 +151,37 @@ a.corner_nav {
 }
 
 /* Numbers */
-.tatkara td:nth-of-type(2n) a, .tatkara td:nth-of-type(2n) a:link, .tatkara td:nth-of-type(2n) a:visited {
+.tatkara_row a, .tatkara_row td:nth-of-type(3n) a:link, .tatkara_row td:nth-of-type(3n) a:visited {
   color: #2aaae2;
-  font-size: 25px;
 }
-
-/* .tatkara_item {
-  color: #2AAAE2;
-  font-size: 20px;
-  line-height: 20px;
-} */
-
-/* .tatkara_item a {
-  text-decoration: underline;
-} */
 
 .tatkara tr {
   text-align: left;
-  border-width:2px;
-  border-style:solid;
-  border-color:#a1a0a0;
-}
-
-.tatkara .size-regular {
   font-size: 25px;
   line-height: 20px;
 }
 
-.tatkara .size-small {
-  font-size: 25px;
-  line-height: 20px;
+.tatkara tr:nth-of-type(2n) {
+  background-color: #1b1b1b;
 }
 
-.difficulty-normal a, .difficulty-normal a:link, .difficulty-normal a:visited {
+.difficulty-normal a.tatkara_bani, .difficulty-normal a.tatkara_bani:link, .difficulty-normal a.tatkara_bani:visited {
   color:#2aaae2;
 }
 
-.difficulty-easy a, .difficulty-easy a:link, .difficulty-easy a:visited {
+.difficulty-easy a.tatkara_bani, .difficulty-easy a.tatkara_bani:link, .difficulty-easy a.tatkara_bani:visited {
   color:#66ae00;
 }
 
-.difficulty-medium a, .difficulty-medium a:link, .difficulty-medium a:visited {
+.difficulty-medium a.tatkara_bani, .difficulty-medium a.tatkara_bani:link, .difficulty-medium a.tatkara_bani:visited {
   color:#ffe100;
 }
 
-.difficulty-hard a, .difficulty-hard a:link, .difficulty-hard a:visited {
+.difficulty-hard a.tatkara_bani, .difficulty-hard a.tatkara_bani:link, .difficulty-hard a.tatkara_bani:visited {
   color:#ff8400
 }
 
-.difficulty-veryhard a, .difficulty-veryhard a:link, .difficulty-veryhard a:visited {
+.difficulty-veryhard a.tatkara_bani, .difficulty-veryhard a.tatkara_bani:link, .difficulty-veryhard a.tatkara_bani:visited {
   color:#ff0000ee
 }
 
@@ -543,7 +525,7 @@ nav a.button-collapse {
   }
 }
 body.dark {
-  background-color: #222;
+  background-color: #000000;
   color: #ddd;
 }
 body.dark header {
@@ -553,7 +535,7 @@ body.dark .side-nav,
 body.dark .side-nav .collapsible-body,
 body.dark .modal,
 body.dark .modal .modal-footer {
-  background-color: #222;
+  background-color: #000000;
   color: #ddd;
 }
 body.dark a,
