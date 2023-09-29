@@ -13,7 +13,8 @@ var larreevaar            = window.localStorage["larreevaar"]             || 1;
 var larreevaar_assistance = window.localStorage["larreevaar_assistance"]  || 0;
 var linebreak             = window.localStorage["linebreak"]              || 0;
 var vishrams              = window.localStorage["vishrams"]               || 0;
-var lang                  = "en";//window.localStorage["lang"]                   || "en";
+var ucharan               = window.localStorage["ucharan"]                || 1;
+var lang                  = window.localStorage["lang"]                   || "en";
 var bookmark_index        = window.localStorage["bookmark_index"]         || null;
 var bookmark_ang          = window.localStorage["bookmark_ang"]           || null;
 var backButtonClose       = false;
@@ -73,6 +74,7 @@ function init() {
   if (vishrams == 1)              $("#paatth, #vishrams").addClass("vishrams");
   $(".setting[data-setting='swipe_nav']").data("on", swipe_nav);
   $(".setting[data-setting='dark']").data("on", dark);
+  $(".setting[data-setting='ucharan']").data("on", ucharan);
   if (dark == 1) {
     $("body").addClass("dark");
     StatusBar.backgroundColorByHexString('#222');
@@ -215,6 +217,19 @@ function returnToAng() {
   location.reload(); 
 }
 
+function showUcharanBox(e, raw_div) {
+  if (ucharan == 1) {
+    var div_id = raw_div.id
+    var left  = e.clientX  + "px";
+    var top  = e.clientY  + "px";
+    var div = document.getElementById(div_id);
+    div.style.left = left;
+    div.style.top = top;
+    $("#"+div_id).toggle();
+  }
+  return false;
+}
+
 function setAng(set_ang, store) {
   store = typeof store !== 'undefined' ? store : true;
   //Make sure it's an Ang within the proper range or set to 1
@@ -230,7 +245,7 @@ function setAng(set_ang, store) {
   var newPaatth = '';
   var endpoint = "paatth/" + ang + ".html";
   $.get(endpoint, function(data) {
-    var shabads;
+    var shabads = [];
     if ($("body").hasClass("linebreak")) {
       shabads = data
       .replace(/\./g, '')
@@ -239,7 +254,17 @@ function setAng(set_ang, store) {
       .replace(/ /g, '&#8203;');
       newPaatth = '<span class="linebreak">' + shabads + '</span>';
     } else {
-      shabads = data.split(' ');
+      pangtis = data.split('!');
+      $.each(pangtis, function(index,pangti){
+        words = pangti.replace(/(.*)\}/,'').split(' ');
+        paath = (pangti.split("{")[1] ||"").split("}")[0];
+        if (paath.length > 0) {
+          words = words.map(i => "{" + paath + "}" + i);
+        }
+        console.log(words);
+        shabads = shabads.concat(words);
+      });
+      // shabads = data.split(' ');
       spacing = '';
       $.each(shabads, function(index,val){
         if (val == 'ੴ') {
@@ -247,29 +272,41 @@ function setAng(set_ang, store) {
         } else {
           spacing = '';
         }
-        lastChar = val.at(-1)
+        firstChar = val.at(0);
+        var full_word = val;
+        var pathantar = '';
+        if (firstChar == '{') {
+          full_word = val.replace(/(.*)\}/,'');
+          pathantar = (val.split("{")[1] ||"").split("}")[0].replace(/_/g, " ");
+        }
+        lastChar = full_word.at(-1);
         if (lastChar == '॥') {
           tag = 'i';
           closing_tag = 'i';
-          word = val;
+          word = full_word;
         } else if (lastChar == ';') {
           tag = 'span class="large-pause"';
           closing_tag = 'span';
-          word = val.slice(0,-1);
+          word = full_word.slice(0,-1);
         } else if (lastChar == ',') {
           tag = 'span class="medium-pause"';
           closing_tag = 'span';
-          word = val.slice(0,-1);
+          word = full_word.slice(0,-1);
         } else if (lastChar == '.') {
           tag = 'span class="small-pause"';
           closing_tag = 'span';
-          word = val.slice(0,-1);
+          word = full_word.slice(0,-1);
         } else {
           tag = 'span';
+          word = full_word;
           closing_tag = 'span';
-          word = val;
         }
-        newPaatth += spacing + '<' + tag + '>' + word + (tag == 'i' ? ' ' : '') + '</' + closing_tag + '> ' + spacing;
+        if (firstChar == '{') {
+          var divLabel = word + "_" + index
+          newPaatth += '<div id="'+divLabel+'" class="ucharan_box" style="position: fixed; display:none;">'+pathantar+'</div>'
+          tag += ' span onmouseover="showUcharanBox(event,'+divLabel+')" onmouseout="showUcharanBox(event,'+divLabel +')"';
+        }
+        newPaatth += spacing+'<'+tag+'>'+word+(tag == 'i' ? ' ' : '')+'</'+closing_tag+'> '+spacing;
       });
     }
     $("#paatth").html(newPaatth);
@@ -412,6 +449,9 @@ $(function() {
           $("body, #paatth").addClass(setting);
           setAng(ang);
           break;
+        case "ucharan":
+          ucharan = 1;
+          break;
         case "swipe_nav":
           swipe_nav = 1;
           break;
@@ -452,6 +492,8 @@ $(function() {
             $("body, #paatth").removeClass(setting);
           }
           break;
+        case "ucharan":
+          ucharan = 0;
         case "swipe_nav":
           swipe_nav = 0;
           break;
@@ -609,6 +651,11 @@ $(function() {
         case 118:
           event.preventDefault();
           $("#vishrams").click();
+          break;
+        //u
+        case 117:
+          event.preventDefault();
+          $("#ucharan").click();
           break;
         //L
         case 76:

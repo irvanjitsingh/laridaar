@@ -146,6 +146,19 @@ a.corner_nav {
   font-size: 20px;
 }
 
+.ucharan_box {
+  margin: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 20px;
+  color:#2AAAE2;
+  font-weight: bold;
+  background-color: #1b1b1b;
+  border: 1px solid #eeeeee;
+}
+
 .tatkara {
   font-family: Akaash;
 }
