@@ -1,12 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.gursevak.sehajpaath" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Sehaj Paath</name>
+    <name>Laridaar Santhiya</name>
     <description>
-        Practice reading in larivaar through Sehaj Paath
+        Practice reading Gurbani through Sehaj Paath
     </description>
     <content src="index.html" />
     <access origin="*" />
-    <preference name="WindowsStoreIdentityName" value="KhalisFoundation.LearnLarivaar" />
     <preference name="windows-target-version" value="10.0" />
     <preference name="webviewbounce" value="false" />
     <preference name="DisallowOverscroll" value="true" />

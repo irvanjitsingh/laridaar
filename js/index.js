@@ -214,7 +214,7 @@ function openTatkaraAudio() {
 }
 
 function returnToAng() {
-  location.reload(); 
+  init();
 }
 
 function showUcharanBox(e, raw_div) {
@@ -256,19 +256,30 @@ function setAng(set_ang, store) {
     } else {
       pangtis = data.split('!');
       $.each(pangtis, function(index,pangti){
+        // these characters do not render on WebKit-based browsers (Safari + all iOS browsers)
+        // these character render on non-WebKit browsers but are obstructed by each other
+        // if (navigator.userAgent.indexOf('AppleWebKit') != -1) {
+        pangti = pangti.replace(/ਂੀ/g,'\u0A40\uF03D'); // bindi before bihaari
+        pangti = pangti.replace(/ੰੀ/g,'\u0A40\uF034'); // tipi before bihaari
+        // }
+        // these characters render on all browsers but are obstructed by each other
+        pangti = pangti.replace(/ੑੁ/g,'\uF040'); // halant and unkar
+        pangti = pangti.replace(/ੑੂ/g,'\uF041'); // halant and dulainkar
+        pangti = pangti.replace(/ੵੁ/g,'\uF043'); // yakash and unkar
+        pangti = pangti.replace(/ੵੂ/g,'\uF044'); // yakash and dulainkar
+
         words = pangti.replace(/(.*)\}/,'').split(' ');
         paath = (pangti.split("{")[1] ||"").split("}")[0];
         if (paath.length > 0) {
           words = words.map(i => "{" + paath + "}" + i);
         }
-        console.log(words);
         shabads = shabads.concat(words);
       });
       // shabads = data.split(' ');
       spacing = '';
       $.each(shabads, function(index,val){
         if (val == 'ੴ') {
-          spacing = '<i>&ensp;</i>';
+          spacing = '<i>&emsp;</i>';
         } else {
           spacing = '';
         }
@@ -306,7 +317,7 @@ function setAng(set_ang, store) {
           newPaatth += '<div id="'+divLabel+'" class="ucharan_box" style="position: fixed; display:none;">'+pathantar+'</div>'
           tag += ' span onmouseover="showUcharanBox(event,'+divLabel+')" onmouseout="showUcharanBox(event,'+divLabel +')"';
         }
-        newPaatth += spacing+'<'+tag+'>'+word+(tag == 'i' ? ' ' : '')+'</'+closing_tag+'> '+spacing;
+        newPaatth += spacing+'<'+tag+'>'+word+(tag == 'i' ? ' ' : '')+'</'+closing_tag+'> ';
       });
     }
     $("#paatth").html(newPaatth);
@@ -627,7 +638,6 @@ $(function() {
     }
   });
   $(document).keypress(function(event) {
-    // event.preventDefault();
     if (!$(document.activeElement).is("input")) {
       switch (event.keyCode) {
         //+
