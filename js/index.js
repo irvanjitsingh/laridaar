@@ -244,31 +244,39 @@ function setAng(set_ang, store) {
   $(".plus1").data("ang", plus1);
   var newPaatth = '';
   var endpoint = "paatth/" + ang + ".html";
+  var ucharan_regex = /(.*)\}/;
   $.get(endpoint, function(data) {
+    var gurbani = data;
     var shabads = [];
+
+    // if (navigator.userAgent.indexOf('AppleWebKit') != -1) {}
+    // these characters do not render on WebKit-based browsers (Safari + all iOS browsers)
+    // they render on non-WebKit browsers but are not legible
+    gurbani = gurbani
+    .replace(/ਂੀ/g,'\u0A40\uF03D') // bindi before bihaari
+    .replace(/ੰੀ/g,'\u0A40\uF034') // tipi before bihaari
+
+    // the private-use unicode characters (F0) do not render correctly with ੲ
+    .replace(/\u0A72\u0A40\uF03D/g,'ੲਂੀ') // use standard unicode bindi
+    .replace(/\u0A72\u0A40\uF034/g,'ੲੰੀ') // use standard unicode tippi
+
+    // these characters render on all browsers but are not legible
+    .replace(/ੑੁ/g,'\uF040') // halant and unkar
+    .replace(/ੑੂ/g,'\uF041') // halant and dulainkar
+    .replace(/ੵੁ/g,'\uF043') // yakash and unkar
+    .replace(/ੵੂ/g,'\uF044'); // yakash and dulainkar
+
+    pangtis = gurbani.split('!');
     if ($("body").hasClass("linebreak")) {
-      shabads = data
+      shabads = pangtis.map(i => i.replace(ucharan_regex,'')).join()
       .replace(/\./g, '')
       .replace(/,/g, '')
       .replace(/;/g, '')
-      .replace(/ /g, '&#8203;');
+      .replace(/ /g, '&#8203;'); // zero-width html space
       newPaatth = '<span class="linebreak">' + shabads + '</span>';
     } else {
-      pangtis = data.split('!');
       $.each(pangtis, function(index,pangti){
-        // these characters do not render on WebKit-based browsers (Safari + all iOS browsers)
-        // these character render on non-WebKit browsers but are obstructed by each other
-        // if (navigator.userAgent.indexOf('AppleWebKit') != -1) {
-        pangti = pangti.replace(/ਂੀ/g,'\u0A40\uF03D'); // bindi before bihaari
-        pangti = pangti.replace(/ੰੀ/g,'\u0A40\uF034'); // tipi before bihaari
-        // }
-        // these characters render on all browsers but are obstructed by each other
-        pangti = pangti.replace(/ੑੁ/g,'\uF040'); // halant and unkar
-        pangti = pangti.replace(/ੑੂ/g,'\uF041'); // halant and dulainkar
-        pangti = pangti.replace(/ੵੁ/g,'\uF043'); // yakash and unkar
-        pangti = pangti.replace(/ੵੂ/g,'\uF044'); // yakash and dulainkar
-
-        words = pangti.replace(/(.*)\}/,'').split(' ');
+        words = pangti.replace(ucharan_regex,'').split(' ');
         paath = (pangti.split("{")[1] ||"").split("}")[0];
         if (paath.length > 0) {
           words = words.map(i => "{" + paath + "}" + i);
@@ -284,36 +292,28 @@ function setAng(set_ang, store) {
           spacing = '';
         }
         firstChar = val.at(0);
-        var full_word = val;
+        lastChar = val.at(-1);
+        var word = val;
         var pathantar = '';
         if (firstChar == '{') {
-          full_word = val.replace(/(.*)\}/,'');
+          word = val.replace(ucharan_regex,'');
           pathantar = (val.split("{")[1] ||"").split("}")[0].replace(/_/g, " ");
         }
-        lastChar = full_word.at(-1);
+        tag = closing_tag = 'span';
         if (lastChar == '॥') {
-          tag = 'i';
-          closing_tag = 'i';
-          word = full_word;
+          tag = closing_tag = 'i';
         } else if (lastChar == ';') {
           tag = 'span class="large-pause"';
-          closing_tag = 'span';
-          word = full_word.slice(0,-1);
+          word = word.slice(0,-1);
         } else if (lastChar == ',') {
           tag = 'span class="medium-pause"';
-          closing_tag = 'span';
-          word = full_word.slice(0,-1);
+          word = word.slice(0,-1);
         } else if (lastChar == '.') {
           tag = 'span class="small-pause"';
-          closing_tag = 'span';
-          word = full_word.slice(0,-1);
-        } else {
-          tag = 'span';
-          word = full_word;
-          closing_tag = 'span';
+          word = word.slice(0,-1);
         }
         if (firstChar == '{') {
-          var divLabel = word + "_" + index
+          var divLabel = "word_" + index
           newPaatth += '<div id="'+divLabel+'" class="ucharan_box" style="position: fixed; display:none;">'+pathantar+'</div>'
           tag += ' span onmouseover="showUcharanBox(event,'+divLabel+')" onmouseout="showUcharanBox(event,'+divLabel +')"';
         }
