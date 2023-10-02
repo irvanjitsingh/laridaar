@@ -266,39 +266,77 @@ function setAng(set_ang, store) {
     .replace(/ੵੁ/g,'\uF043') // yakash and unkar
     .replace(/ੵੂ/g,'\uF044'); // yakash and dulainkar
 
-    pangtis = gurbani.split('!');
+    lines = gurbani.split('!');
+
+    sirlekhList = [
+      'ਮਹਲਾ',
+      'ਮਹਲੇ',
+      'ਭਗਤ',
+      'ਘਰਿ',
+    ];
+
+    // traditional larivaar
     if ($("body").hasClass("linebreak")) {
-      shabads = pangtis.map(i => i.replace(ucharan_regex,'')).join()
+      shabads = lines.map(i => i.replace(ucharan_regex,'')).join()
       .replace(/\./g, '')
       .replace(/,/g, '')
       .replace(/;/g, '')
       .replace(/ /g, '&#8203;'); // zero-width html space
       newPaatth = '<span class="linebreak">' + shabads + '</span>';
+
+    // standard larivaar
     } else {
-      $.each(pangtis, function(index,pangti){
-        words = pangti.replace(ucharan_regex,'').split(' ');
-        paath = (pangti.split("{")[1] ||"").split("}")[0];
-        if (paath.length > 0) {
-          words = words.map(i => "{" + paath + "}" + i);
+      $.each(lines, function(index,line){
+        pangti = line.replace(ucharan_regex,'');
+
+        // check for sirlekh
+        if (sirlekhList.some(substring=>pangti.includes(substring))) {
+          if (index > 0) {
+            prevPangti = lines[index-1];
+            if (prevPangti.includes('ੴ')) {
+              pangti = `!${pangti}!`;
+            }
+          }
+          if (index < lines.length) {
+            nextPangti = lines[index+1];
+            if (nextPangti.includes('ੴ')) {
+              pangti = `!${pangti}!`;
+            }
+          }
+        }
+
+        // check for mangal
+        if (pangti.includes('ੴ')) {
+          pangti = `!${pangti}!`;
+        }
+
+        words = pangti.split(' ');
+        ucharan = (line.split("{")[1] ||"").split("}")[0];
+        if (ucharan.length > 0) {
+          words = words.map(i => "{" + ucharan + "}" + i);
         }
         shabads = shabads.concat(words);
       });
-      // shabads = data.split(' ');
-      spacing = '';
+      // spacing = '';
       $.each(shabads, function(index,val){
-        if (val == 'ੴ') {
-          spacing = '<i>&emsp;</i>';
-        } else {
-          spacing = '';
-        }
         firstChar = val.at(0);
         lastChar = val.at(-1);
-        var word = val;
-        var pathantar = '';
+        word = val;
+        ucharan = '';
         if (firstChar == '{') {
           word = val.replace(ucharan_regex,'');
-          pathantar = (val.split("{")[1] ||"").split("}")[0].replace(/_/g, " ");
+          ucharan = (val.split("{")[1] ||"").split("}")[0].replace(/_/g, " ");
+          firstChar = word.at(0);
         }
+        spacingStart = spacingEnd = '';
+        spacing = '<i>&emsp;</i>';
+        if (firstChar == '!') {
+          spacingStart = spacing;
+        }
+        if (lastChar == '!') {
+          spacingEnd = spacing;
+        }
+        word = word.replace(/!/g,'');
         tag = closing_tag = 'span';
         if (lastChar == '॥') {
           tag = closing_tag = 'i';
@@ -314,10 +352,11 @@ function setAng(set_ang, store) {
         }
         if (firstChar == '{') {
           var divLabel = "word_" + index
-          newPaatth += '<div id="'+divLabel+'" class="ucharan_box" style="position: fixed; display:none;">'+pathantar+'</div>'
+          newPaatth += '<div id="'+divLabel+'" class="ucharan_box" style="position: fixed; display:none;">'+ucharan+'</div>'
           tag += ' span onmouseover="showUcharanBox(event,'+divLabel+')" onmouseout="showUcharanBox(event,'+divLabel +')"';
         }
-        newPaatth += spacing+'<'+tag+'>'+word+(tag == 'i' ? ' ' : '')+'</'+closing_tag+'> ';
+        newPaatth += spacingStart+'<'+tag+'>'+word+(tag == 'i' ? ' ' : '')+'</'+closing_tag+'> '+spacingEnd;
+        newPaatth = newPaatth.replace(`${spacing}${spacing}`,`${spacing}`);
       });
     }
     $("#paatth").html(newPaatth);
