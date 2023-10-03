@@ -249,16 +249,12 @@ function setAng(set_ang, store) {
     var gurbani = data;
     var shabads = [];
 
-    // if (navigator.userAgent.indexOf('AppleWebKit') != -1) {}
     // these characters do not render on WebKit-based browsers (Safari + all iOS browsers)
-    // they render on non-WebKit browsers but are not legible
+    // they render on non-WebKit browsers but are not legible so we use font-provided
+    // the private-use characters (F0) do not render correctly with ੲ so we use the standard rendering here
     gurbani = gurbani
-    .replace(/ਂੀ/g,'\u0A40\uF03D') // bindi before bihaari
-    .replace(/ੰੀ/g,'\u0A40\uF034') // tipi before bihaari
-
-    // the private-use unicode characters (F0) do not render correctly with ੲ
-    .replace(/\u0A72\u0A40\uF03D/g,'ੲਂੀ') // use standard unicode bindi
-    .replace(/\u0A72\u0A40\uF034/g,'ੲੰੀ') // use standard unicode tippi
+    .replace(/[^ੲ]ਂੀ/g,'\u0A40\uF03D') // bindi before bihaari
+    .replace(/[^ੲ]ੰੀ/g,'\u0A40\uF034') // tipi before bihaari
 
     // these characters render on all browsers but are not legible
     .replace(/ੑੁ/g,'\uF040') // halant and unkar
@@ -266,13 +262,21 @@ function setAng(set_ang, store) {
     .replace(/ੵੁ/g,'\uF043') // yakash and unkar
     .replace(/ੵੂ/g,'\uF044'); // yakash and dulainkar
 
+    // both standard and private-use characters don't render on correctly with ੲ on Webkit so we swap the characters
+    if (navigator.userAgent.indexOf('AppleWebKit') != -1) {
+      gurbani = gurbani
+      .replace(/ੲਂੀ/g,'ਈਂ')
+      .replace(/ੲੰੀ/g,'ਈੰ');
+    }
+
     lines = gurbani.split('!');
 
     sirlekhList = [
       'ਮਹਲਾ',
       'ਮਹਲੇ',
       'ਭਗਤ',
-      'ਘਰਿ',
+      'ਭਗਤਾ',
+      'ਭਗਤਾਂ',
     ];
 
     // traditional larivaar
@@ -317,29 +321,37 @@ function setAng(set_ang, store) {
         }
         shabads = shabads.concat(words);
       });
-      // spacing = '';
       $.each(shabads, function(index,val){
         firstChar = val.at(0);
         lastChar = val.at(-1);
         word = val;
+
+        // ucharan
         ucharan = '';
         if (firstChar == '{') {
           word = val.replace(ucharan_regex,'');
           ucharan = (val.split("{")[1] ||"").split("}")[0].replace(/_/g, " ");
           firstChar = word.at(0);
         }
-        spacingStart = spacingEnd = '';
-        spacing = '<i>&emsp;</i>';
+
+        // mangals
+        spacingStart = spacingEnd = formatStart = formatEnd = '';
+        spacing = '<i>&ensp;</i>';
         if (firstChar == '!') {
           spacingStart = spacing;
+          formatStart = '<i id="mangal">';
         }
         if (lastChar == '!') {
           spacingEnd = spacing;
+          formatEnd = '</i>';
         }
         word = word.replace(/!/g,'');
+
         tag = closing_tag = 'span';
         if (lastChar == '॥') {
           tag = closing_tag = 'i';
+        
+        // vishrams
         } else if (lastChar == ';') {
           tag = 'span class="large-pause"';
           word = word.slice(0,-1);
@@ -350,12 +362,17 @@ function setAng(set_ang, store) {
           tag = 'span class="small-pause"';
           word = word.slice(0,-1);
         }
+
+        // ucharan
         if (firstChar == '{') {
           var divLabel = "word_" + index
           newPaatth += '<div id="'+divLabel+'" class="ucharan_box" style="position: fixed; display:none;">'+ucharan+'</div>'
           tag += ' span onmouseover="showUcharanBox(event,'+divLabel+')" onmouseout="showUcharanBox(event,'+divLabel +')"';
         }
-        newPaatth += spacingStart+'<'+tag+'>'+word+(tag == 'i' ? ' ' : '')+'</'+closing_tag+'> '+spacingEnd;
+
+        newPaatth += spacingStart+formatStart+'<'+tag+'>'+word+(tag == 'i' ? ' ' : '')+'</'+closing_tag+'> '+formatEnd+spacingEnd;
+
+        // dedupe spacing between sirlekhs and mangals
         newPaatth = newPaatth.replace(`${spacing}${spacing}`,`${spacing}`);
       });
     }

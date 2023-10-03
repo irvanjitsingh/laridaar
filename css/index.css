@@ -42,6 +42,11 @@ body {
 }
 
 @font-face {
+  font-family: Akaash-Bold;
+  src: url("../fonts/Akaash-Bold.ttf");
+}
+
+@font-face {
   font-family: GurbaniAkhar;
   src: url("../fonts/GurbaniAkhar.ttf");
 }
@@ -338,6 +343,10 @@ div.ui-datepicker {
   float: left;
   vertical-align: bottom;
   white-space: nowrap;
+}
+
+#mangal {
+  font-family: Akaash-Bold;
 }
 
 #paatth.larreevaar span:hover {
