@@ -196,19 +196,19 @@ function formatDate(date) {
 }
 
 function openTatkaraGurmukhi() {
-  $.get("paatth/0-tatkara-gurmukhi.html", function(data) {
+  $.get("tatkara.html", function(data) {
     $("#paatth").html(data);
   });
 }
 
 function openTatkaraEnglish() {
-  $.get("paatth/0-tatkara-english.html", function(data) {
+  $.get("tatkara_english.html", function(data) {
     $("#paatth").html(data);
   });
 }
 
 function openTatkaraAudio() {
-  $.get("paatth/0-tatkara-audio.html", function(data) {
+  $.get("tatkara_audio.html", function(data) {
     $("#paatth").html(data);
   });
 }
@@ -236,8 +236,8 @@ function setAng(set_ang, store) {
   var set_ang = parseInt(set_ang);
   if (set_ang < 1 || set_ang > 1430) set_ang = 1;
   //Set the one before and one after
-  var minus1                = ((set_ang - 1) >= 1 ? (set_ang - 1) : 1);
-  var plus1                 = ((set_ang + 1) <= 1430 ? (set_ang + 1) : 1430);
+  var minus1 = ((set_ang - 1) >= 1 ? (set_ang - 1) : 1);
+  var plus1  = ((set_ang + 1) <= 1430 ? (set_ang + 1) : 1430);
   $(".ang").val(set_ang);
   ang = set_ang;
   $(".minus1").data("ang", minus1);
@@ -253,8 +253,10 @@ function setAng(set_ang, store) {
     // they render on non-WebKit browsers but are not legible so we use font-provided
     // the private-use characters (F0) do not render correctly with ੲ so we use the standard rendering here
     gurbani = gurbani
-    .replace(/[^ੲ]ਂੀ/g,'\u0A40\uF03D') // bindi before bihaari
-    .replace(/[^ੲ]ੰੀ/g,'\u0A40\uF034') // tipi before bihaari
+    .replace(/ਂੀ/g,'\u0A40\uF03D') // bindi before bihaari
+    .replace(/ੰੀ/g,'\u0A40\uF034') // tipi before bihaari
+    .replace(/\u0A72\u0A40\uF03D/g,'ੲਂੀ') // bindi before bihaari
+    .replace(/\u0A72\u0A40\uF034/g,'ੲੰੀ') // tipi before bihaari
 
     // these characters render on all browsers but are not legible
     .replace(/ੑੁ/g,'\uF040') // halant and unkar
@@ -274,9 +276,18 @@ function setAng(set_ang, store) {
     sirlekhList = [
       'ਮਹਲਾ',
       'ਮਹਲੇ',
-      'ਭਗਤ',
+      '॥ ਜਪੁ ॥',
+      // 'ਃ',
+      // 'ਭਗਤ',
       'ਭਗਤਾ',
       'ਭਗਤਾਂ',
+      'ਜੀਉ ਕੀ',
+      'ਜੀ ਕੀ',
+      'ਜੀ ਕੰੀ',
+      'ਰਾਗੁ',
+      'ਚਉਪਦੇ',
+      'ਕਾ ਪਦਾ',
+      'ਕੇ ਪਦੇ',
     ];
 
     // traditional larivaar
@@ -315,43 +326,47 @@ function setAng(set_ang, store) {
         }
 
         words = pangti.split(' ');
-        ucharan = (line.split("{")[1] ||"").split("}")[0];
-        if (ucharan.length > 0) {
-          words = words.map(i => "{" + ucharan + "}" + i);
+
+        // add ucharan tip to each word
+        ucharanTip = (line.split("{")[1] ||"").split("}")[0];
+        if (ucharanTip.length > 0) {
+          words = words.map(i => "{" + ucharanTip + "}" + i);
         }
+
         shabads = shabads.concat(words);
       });
       $.each(shabads, function(index,val){
         firstChar = val.at(0);
         lastChar = val.at(-1);
         word = val;
+        hasUcharan = false;
 
         // ucharan
-        ucharan = '';
+        ucharanTip = '';
         if (firstChar == '{') {
           word = val.replace(ucharan_regex,'');
-          ucharan = (val.split("{")[1] ||"").split("}")[0].replace(/_/g, " ");
+          ucharanTip = (val.split("{")[1] ||"").split("}")[0].replace(/_/g, " ");
           firstChar = word.at(0);
+          hasUcharan = true;
         }
 
         // mangals
         spacingStart = spacingEnd = formatStart = formatEnd = '';
-        spacing = '<i>&ensp;</i>';
+        spacing = '<span id="spacing">&ensp;&ensp;&ensp;</span>';
         if (firstChar == '!') {
           spacingStart = spacing;
-          formatStart = '<i id="mangal">';
         }
         if (lastChar == '!') {
           spacingEnd = spacing;
-          formatEnd = '</i>';
         }
         word = word.replace(/!/g,'');
+        lastChar = word.at(-1);
 
+        // vishrams
         tag = closing_tag = 'span';
         if (lastChar == '॥') {
-          tag = closing_tag = 'i';
-        
-        // vishrams
+          tag = 'i id="bookmark"';
+          closing_tag = 'i';
         } else if (lastChar == ';') {
           tag = 'span class="large-pause"';
           word = word.slice(0,-1);
@@ -364,12 +379,13 @@ function setAng(set_ang, store) {
         }
 
         // ucharan
-        if (firstChar == '{') {
+        if (hasUcharan && lastChar != '॥') {
           var divLabel = "word_" + index
-          newPaatth += '<div id="'+divLabel+'" class="ucharan_box" style="position: fixed; display:none;">'+ucharan+'</div>'
-          tag += ' span onmouseover="showUcharanBox(event,'+divLabel+')" onmouseout="showUcharanBox(event,'+divLabel +')"';
+          newPaatth += '<div id="'+divLabel+'" class="ucharan_box" style="position: fixed; display:none;">'+ucharanTip+'</div>'
+          tag += ' onmouseover="showUcharanBox(event,'+divLabel+')" onmouseout="showUcharanBox(event,'+divLabel +')"';
         }
 
+        // generate html
         newPaatth += spacingStart+formatStart+'<'+tag+'>'+word+(tag == 'i' ? ' ' : '')+'</'+closing_tag+'> '+formatEnd+spacingEnd;
 
         // dedupe spacing between sirlekhs and mangals
@@ -379,8 +395,8 @@ function setAng(set_ang, store) {
     $("#paatth").html(newPaatth);
     //Check for bookmark, insert it and scroll to
     if (bookmark_ang == ang && bookmark_index > -1) {
-      $("#paatth *").eq(bookmark_index).after($("<i></i>").addClass("fa fa-bookmark"));
-      window.scrollTo(0,$("i.fa.fa-bookmark").offset().top-58);
+      $('#paatth *').eq(bookmark_index).after($('#bookmark *').addClass('fa fa-bookmark'));
+      window.scrollTo(0,$('i.fa.fa-bookmark').offset().top-58);
     } else {
       window.scrollTo(0,0);
     }
@@ -399,7 +415,7 @@ function setAng(set_ang, store) {
   } else {
     //Loading for the first time
     //Check for bookmark, insert it and scroll to
-    if (bookmark_ang == ang && bookmark_index > -1) $("#paatth *").eq(bookmark_index).after($("<i></i>").addClass("fa fa-bookmark"));
+    if (bookmark_ang == ang && bookmark_index > -1) $('#paatth *').eq(bookmark_index).after($('#bookmark *').addClass('fa fa-bookmark'));
   }
 }
 
@@ -503,7 +519,8 @@ $(function() {
         case "linebreak":
           if ($("#paatth").hasClass("larreevaar")) {
             $("body, #paatth").removeClass("larreevaar");
-            window.localStorage["larreevaar"] = 0; 
+            window.localStorage["larreevaar"] = 0;
+            larreevaar = 0;
           }
           $("body, #paatth").addClass(setting);
           setAng(ang);
@@ -512,9 +529,10 @@ $(function() {
           if ($("body").hasClass("linebreak")) {
             $("body, #paatth").removeClass("linebreak");
             window.localStorage["linebreak"] = 0;
+            linebreak = 0;
+            setAng(ang);
           }
           $("body, #paatth").addClass(setting);
-          setAng(ang);
           break;
         case "ucharan":
           ucharan = 1;
@@ -549,8 +567,6 @@ $(function() {
           $("#paatth").removeClass(setting);
           break;
         case "linebreak":
-          if ($("#paatth").hasClass("larreevaar")) {
-          }
           $("body, #paatth").removeClass(setting);
           setAng(ang);
           break;
@@ -561,6 +577,7 @@ $(function() {
           break;
         case "ucharan":
           ucharan = 0;
+          break;
         case "swipe_nav":
           swipe_nav = 0;
           break;
