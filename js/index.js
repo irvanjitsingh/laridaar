@@ -276,11 +276,8 @@ function setAng(set_ang, store) {
     sirlekhList = [
       'ਮਹਲਾ',
       'ਮਹਲੇ',
-      '॥ ਜਪੁ ॥',
-      // 'ਃ',
-      // 'ਭਗਤ',
-      'ਭਗਤਾ',
-      'ਭਗਤਾਂ',
+      'ਭਗਤਾ ਕੀ',
+      'ਭਗਤਾਂ ਕੀ',
       'ਜੀਉ ਕੀ',
       'ਜੀ ਕੀ',
       'ਜੀ ਕੰੀ',
@@ -288,6 +285,7 @@ function setAng(set_ang, store) {
       'ਚਉਪਦੇ',
       'ਕਾ ਪਦਾ',
       'ਕੇ ਪਦੇ',
+      '॥ ਜਪੁ ॥',
     ];
 
     // traditional larivaar
@@ -327,13 +325,39 @@ function setAng(set_ang, store) {
 
         words = pangti.split(' ');
 
-        // add ucharan tip to each word
+        // add ucharan tip to the corresponding word 
         ucharanTip = (line.split("{")[1] ||"").split("}")[0];
         if (ucharanTip.length > 0) {
-          words = words.map(i => "{" + ucharanTip + "}" + i);
+          ucharan_words = ucharanTip.split('।');
+          ucharan_map = {};
+          for (ucharan_word of ucharan_words) {
+            gurbani_word = ucharan_word.split(':')[0]
+            .replace(/_/g,'')
+            .replace(/-/g,'')
+            .replace(/ੱ/g,'')
+            .replace(/ੑ/g,'')
+            .replace(/ਂ/g,'');
+            ucharan_map[gurbani_word] = ucharan_word;
+          }
+          words_with_ucharan = [];
+          for (word of words) {
+            plain_word = word
+            .replace('!','')
+            .replace(';','')
+            .replace(',','')
+            .replace('.','');
+            if (plain_word in ucharan_map) {
+              new_word = "{" + ucharan_map[plain_word] + "}" + word
+              words_with_ucharan.push(new_word);
+            } else {
+              words_with_ucharan.push(word);
+            }
+          }
+          // words = words.map(i => "{" + ucharanTip + "}" + i);
+          shabads = shabads.concat(words_with_ucharan);
+        } else {
+          shabads = shabads.concat(words);
         }
-
-        shabads = shabads.concat(words);
       });
       $.each(shabads, function(index,val){
         firstChar = val.at(0);
