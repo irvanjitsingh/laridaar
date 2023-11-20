@@ -213,6 +213,12 @@ function openTatkaraAudio() {
   });
 }
 
+function openTatkaraAkps() {
+  $.get("tatkara_akps.html", function(data) {
+    $("#paatth").html(data);
+  });
+}
+
 function returnToAng() {
   init();
 }
@@ -220,11 +226,20 @@ function returnToAng() {
 function showUcharanBox(e, raw_div) {
   if (ucharan == 1) {
     var div_id = raw_div.id
-    var left  = e.clientX  + "px";
-    var top  = e.clientY  + "px";
     var div = document.getElementById(div_id);
-    div.style.left = left;
-    div.style.top = top;
+    var text_length = div.innerHTML.length;
+    var left = e.clientX;
+    var top = e.clientY;
+    var edge_padding = 200;
+    var padding_constant = 100;
+    if (screen.width - left < edge_padding) {
+      left -= padding_constant + (text_length * 2);
+    }
+    if (screen.height - top < edge_padding) {
+      top -= padding_constant;
+    }
+    div.style.left = left + "px";
+    div.style.top = top + "px";
     $("#"+div_id).toggle();
   }
   return false;
@@ -288,17 +303,6 @@ function setAng(set_ang, store) {
       '॥ ਜਪੁ ॥',
     ];
 
-    // traditional larivaar
-    if ($("body").hasClass("linebreak")) {
-      shabads = lines.map(i => i.replace(ucharan_regex,'')).join()
-      .replace(/\./g, '')
-      .replace(/,/g, '')
-      .replace(/;/g, '')
-      .replace(/ /g, '&#8203;'); // zero-width html space
-      newPaatth = '<span class="linebreak">' + shabads + '</span>';
-
-    // standard larivaar
-    } else {
       $.each(lines, function(index,line){
         pangti = line.replace(ucharan_regex,'');
 
@@ -321,6 +325,9 @@ function setAng(set_ang, store) {
         // check for mangal
         if (pangti.includes('ੴ')) {
           pangti = `!${pangti}!`;
+          // oangkaar with larger 'kaar'
+          // pangti = pangti.replace('ੴ', '\uF035'); // should be scaled up approx 1.5x
+          // pangti = pangti.replace('ੴ', '\uF036\uF037'); // should be shifted up approx 0.5x
         }
 
         words = pangti.split(' ');
@@ -353,7 +360,6 @@ function setAng(set_ang, store) {
               words_with_ucharan.push(word);
             }
           }
-          // words = words.map(i => "{" + ucharanTip + "}" + i);
           shabads = shabads.concat(words_with_ucharan);
         } else {
           shabads = shabads.concat(words);
@@ -375,7 +381,7 @@ function setAng(set_ang, store) {
         }
 
         // mangals
-        spacingStart = spacingEnd = formatStart = formatEnd = '';
+        spacingStart = spacingEnd = '';
         spacing = '<span id="spacing">&ensp;&ensp;&ensp;</span>';
         if (firstChar == '!') {
           spacingStart = spacing;
@@ -386,19 +392,22 @@ function setAng(set_ang, store) {
         word = word.replace(/!/g,'');
         lastChar = word.at(-1);
 
-        // vishrams
-        tag = closing_tag = 'span';
         if (lastChar == '॥') {
           tag = 'i id="bookmark"';
           closing_tag = 'i';
-        } else if (lastChar == ';') {
-          tag = 'span class="large-pause"';
+        } else {
+          tag = closing_tag = 'span';
+        }
+
+        // vishrams
+        if (lastChar == ';') {
+          tag += ' class="large-pause"';
           word = word.slice(0,-1);
         } else if (lastChar == ',') {
-          tag = 'span class="medium-pause"';
+          tag += ' class="medium-pause"';
           word = word.slice(0,-1);
         } else if (lastChar == '.') {
-          tag = 'span class="small-pause"';
+          tag += ' class="small-pause"';
           word = word.slice(0,-1);
         }
 
@@ -410,12 +419,12 @@ function setAng(set_ang, store) {
         }
 
         // generate html
-        newPaatth += spacingStart+formatStart+'<'+tag+'>'+word+(tag == 'i' ? ' ' : '')+'</'+closing_tag+'> '+formatEnd+spacingEnd;
+        newPaatth += spacingStart+'<'+tag+'>'+word+(tag == 'i' ? ' ' : '')+'</'+closing_tag+'> '+spacingEnd;
 
         // dedupe spacing between sirlekhs and mangals
         newPaatth = newPaatth.replace(`${spacing}${spacing}`,`${spacing}`);
       });
-    }
+
     $("#paatth").html(newPaatth);
     //Check for bookmark, insert it and scroll to
     if (bookmark_ang == ang && bookmark_index > -1) {
@@ -481,7 +490,7 @@ $(function() {
 
   $("#settings_button").click(function() {
     $('.button-collapse').sideNav('show');
-    /*$('#settings_button').toggleClass('selected');*/
+    $('#settings_button').toggleClass('selected');
   });
   //FONT SIZE
   $(".bigger").click(function () {
@@ -541,21 +550,9 @@ $(function() {
           $("#paatth").addClass(setting);
           break;
         case "linebreak":
-          if ($("#paatth").hasClass("larreevaar")) {
-            $("body, #paatth").removeClass("larreevaar");
-            window.localStorage["larreevaar"] = 0;
-            larreevaar = 0;
-          }
           $("body, #paatth").addClass(setting);
-          setAng(ang);
           break;
         case "larreevaar":
-          if ($("body").hasClass("linebreak")) {
-            $("body, #paatth").removeClass("linebreak");
-            window.localStorage["linebreak"] = 0;
-            linebreak = 0;
-            setAng(ang);
-          }
           $("body, #paatth").addClass(setting);
           break;
         case "ucharan":
@@ -592,12 +589,9 @@ $(function() {
           break;
         case "linebreak":
           $("body, #paatth").removeClass(setting);
-          setAng(ang);
           break;
         case "larreevaar":
-          if (!$("body").hasClass("linebreak")) {
-            $("body, #paatth").removeClass(setting);
-          }
+          $("body, #paatth").removeClass(setting);
           break;
         case "ucharan":
           ucharan = 0;
@@ -750,7 +744,7 @@ $(function() {
         //a
         case 97:
           event.preventDefault();
-          if ($("#paatth").hasClass("larreevaar")) {
+          if ($("#paatth").hasClass("larreevaar") || $("#paatth").hasClass("linebreak")) {
             $("#larreevaar_assistance").click();
           }
           break;
@@ -767,12 +761,16 @@ $(function() {
         //L
         case 76:
           event.preventDefault();
-          $("#linebreak").click();
+          if (!$("#paatth").hasClass("larreevaar")) {
+            $("#linebreak").click();
+          }
           break;
         //l
         case 108:
           event.preventDefault();
-          $("#larreevaar_setting").click();
+          if (!$("#paatth").hasClass("linebreak")) {
+            $("#larreevaar_setting").click();
+          }
           break;
         //m
         case 109:
