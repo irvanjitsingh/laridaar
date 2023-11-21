@@ -419,7 +419,7 @@ function setAng(set_ang, store) {
         }
 
         // generate html
-        newPaatth += spacingStart+'<'+tag+'>'+word+(tag == 'i' ? ' ' : '')+'</'+closing_tag+'> '+spacingEnd;
+        newPaatth += spacingStart+'<'+tag+'>'+word+'</'+closing_tag+'> '+spacingEnd;
 
         // dedupe spacing between sirlekhs and mangals
         newPaatth = newPaatth.replace(`${spacing}${spacing}`,`${spacing}`);

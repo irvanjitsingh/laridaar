@@ -180,7 +180,9 @@ a.corner_nav {
 }
 
 /* Numbers */
-.tatkara_row a, .tatkara_row td:nth-of-type(3n) a:link, .tatkara_row td:nth-of-type(3n) a:visited {
+.tatkara_row a,
+.tatkara_row td:nth-of-type(3n) a:link,
+.tatkara_row td:nth-of-type(3n) a:visited {
   color: #2aaae2;
 }
 
@@ -198,23 +200,33 @@ a.corner_nav {
   border-top: 3px solid #7f7f7f;
 }
 
-.difficulty-normal a.tatkara_bani, .difficulty-normal a.tatkara_bani:link, .difficulty-normal a.tatkara_bani:visited {
+.difficulty-normal a.tatkara_bani,
+.difficulty-normal a.tatkara_bani:link,
+.difficulty-normal a.tatkara_bani:visited {
   color:#2aaae2;
 }
 
-.difficulty-easy a.tatkara_bani, .difficulty-easy a.tatkara_bani:link, .difficulty-easy a.tatkara_bani:visited {
+.difficulty-easy a.tatkara_bani,
+.difficulty-easy a.tatkara_bani:link,
+.difficulty-easy a.tatkara_bani:visited {
   color:#66ae00;
 }
 
-.difficulty-medium a.tatkara_bani, .difficulty-medium a.tatkara_bani:link, .difficulty-medium a.tatkara_bani:visited {
+.difficulty-medium a.tatkara_bani,
+.difficulty-medium a.tatkara_bani:link,
+.difficulty-medium a.tatkara_bani:visited {
   color:#ffe100;
 }
 
-.difficulty-hard a.tatkara_bani, .difficulty-hard a.tatkara_bani:link, .difficulty-hard a.tatkara_bani:visited {
+.difficulty-hard a.tatkara_bani,
+.difficulty-hard a.tatkara_bani:link,
+.difficulty-hard a.tatkara_bani:visited {
   color:#ff8400
 }
 
-.difficulty-veryhard a.tatkara_bani, .difficulty-veryhard a.tatkara_bani:link, .difficulty-veryhard a.tatkara_bani:visited {
+.difficulty-veryhard a.tatkara_bani,
+.difficulty-veryhard a.tatkara_bani:link,
+.difficulty-veryhard a.tatkara_bani:visited {
   color:#ff0000ee
 }
 
@@ -343,7 +355,7 @@ div.ui-datepicker {
 
 #paatth.linebreak {
   word-break: break-all;
-  word-spacing: -.4em;
+  word-spacing: -.3em;
 }
 
 #paatth:after {
@@ -359,48 +371,30 @@ div.ui-datepicker {
   white-space: nowrap;
 }
 
+#paatth.larreevaar.larreevaar_assistance span:nth-of-type(2n),
+#paatth.linebreak.larreevaar_assistance span:nth-of-type(2n),
 #paatth.larreevaar span:hover,
 #paatth.linebreak span:hover {
   color: #2AAAE2;
 }
 
-#paatth.larreevaar.larreevaar_assistance span:nth-of-type(2n),
-#paatth.linebreak.larreevaar_assistance span:nth-of-type(2n) {
-  color: #2AAAE2;
-}
-
-#paatth.vishrams .large-pause {
-  color: #ff8400;
-}
-
-#paatth.vishrams.larreevaar.larreevaar_assistance .large-pause {
-  color: #ff8400;
-}
-
+#paatth.vishrams .large-pause,
+#paatth.vishrams.larreevaar.larreevaar_assistance .large-pause,
+#paatth.vishrams.linebreak.larreevaar_assistance .large-pause,
 .large-pause-color {
   color: #ff8400;
 }
 
-#paatth.vishrams .medium-pause {
-  color: #ffae00;
-}
-
-#paatth.vishrams.larreevaar.larreevaar_assistance .medium-pause {
-  color: #ffae00;
-}
-
+#paatth.vishrams .medium-pause,
+#paatth.vishrams.larreevaar.larreevaar_assistance .medium-pause,
+#paatth.vishrams.linebreak.larreevaar_assistance .medium-pause,
 .medium-pause-color {
   color: #ffae00;
 }
 
-#paatth.vishrams .small-pause {
-  color: #ffe100;
-}
-
-#paatth.vishrams.larreevaar.larreevaar_assistance .small-pause {
-  color: #ffe100;
-}
-
+#paatth.vishrams .small-pause,
+#paatth.vishrams.larreevaar.larreevaar_assistance .small-pause,
+#paatth.vishrams.linebreak.larreevaar_assistance .small-pause,
 .small-pause-color {
   color: #ffe100;
 }
