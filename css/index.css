@@ -353,9 +353,9 @@ div.ui-datepicker {
   padding: 10px 0;
 }
 
-#paatth.linebreak {
+#paatth.linebreak span,
+#paatth.linebreak i {
   word-break: break-all;
-  word-spacing: -.3em;
 }
 
 #paatth:after {

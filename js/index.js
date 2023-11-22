@@ -21,6 +21,8 @@ var backButtonClose       = false;
 var isOnline              = false;
 var keep_awake            = window.localStorage["keep_awake"]             || 0;
 var lefthand              = window.localStorage["lefthand"]               || 0;
+var isWebkit              = navigator.userAgent.indexOf('AppleWebKit') != -1
+var isChromium            = navigator.userAgent.indexOf('Chromium') != -1
 
 document.addEventListener("deviceready", onDeviceReady, false);
 function onDeviceReady() {
@@ -280,7 +282,7 @@ function setAng(set_ang, store) {
     .replace(/ੵੂ/g,'\uF044'); // yakash and dulainkar
 
     // both standard and private-use characters don't render on correctly with ੲ on Webkit so we swap the characters
-    if (navigator.userAgent.indexOf('AppleWebKit') != -1) {
+    if (isWebkit) {
       gurbani = gurbani
       .replace(/ੲਂੀ/g,'ਈਂ')
       .replace(/ੲੰੀ/g,'ਈੰ');
@@ -392,6 +394,12 @@ function setAng(set_ang, store) {
         word = word.replace(/!/g,'');
         lastChar = word.at(-1);
 
+        // linebreak mode (traditional larivaar)
+        spacingAfterTag = ' ';
+        if ($("#paatth").hasClass("linebreak")) {
+          spacingAfterTag = '';
+        }
+
         if (lastChar == '॥') {
           tag = 'i id="bookmark"';
           closing_tag = 'i';
@@ -413,13 +421,35 @@ function setAng(set_ang, store) {
 
         // ucharan
         if (hasUcharan && lastChar != '॥') {
-          var divLabel = "word_" + index
-          newPaatth += '<div id="'+divLabel+'" class="ucharan_box" style="position: fixed; display:none;">'+ucharanTip+'</div>'
-          tag += ' onmouseover="showUcharanBox(event,'+divLabel+')" onmouseout="showUcharanBox(event,'+divLabel +')"';
+          var divLabel = "word_" + index;
+          newPaatth += 
+          '<div id="' +
+          divLabel +
+          '" class="ucharan_box" style="position: fixed; display:none;">' +
+          ucharanTip +
+          '</div>';
+
+          tag += 
+          ' onmouseover="showUcharanBox(event,' +
+          divLabel +
+          ')" onmouseout="showUcharanBox(event,' +
+          divLabel 
+          +')"';
         }
 
         // generate html
-        newPaatth += spacingStart+'<'+tag+'>'+word+'</'+closing_tag+'> '+spacingEnd;
+        newPaatth += 
+        spacingStart +
+        '<' +
+        tag +
+        '>' +
+        word +
+        // (tag == 'i' ? ' ' : '') +
+        '</' +
+        closing_tag +
+        '>' +
+        spacingAfterTag +
+        spacingEnd;
 
         // dedupe spacing between sirlekhs and mangals
         newPaatth = newPaatth.replace(`${spacing}${spacing}`,`${spacing}`);
@@ -497,11 +527,17 @@ $(function() {
     font_size += 1;
     $("#paatth").css("font-size", font_size + "px");
     window.localStorage["font_size"] = font_size;
+    if (isWebkit && $("#paatth").hasClass("linebreak")) {
+      init();
+    }
   });
   $(".smaller").click(function () {
     font_size -= 1;
     $("#paatth").css("font-size", font_size + "px");
     window.localStorage["font_size"] = font_size;
+    if (isWebkit && $("#paatth").hasClass("linebreak")) {
+      init();
+    }
   });
   //CHANGE ANG
   $(".ang").blur(function() {
@@ -551,6 +587,7 @@ $(function() {
           break;
         case "linebreak":
           $("body, #paatth").addClass(setting);
+          setAng(ang);
           break;
         case "larreevaar":
           $("body, #paatth").addClass(setting);
@@ -589,6 +626,7 @@ $(function() {
           break;
         case "linebreak":
           $("body, #paatth").removeClass(setting);
+          setAng(ang);
           break;
         case "larreevaar":
           $("body, #paatth").removeClass(setting);
