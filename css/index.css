@@ -161,6 +161,9 @@ a.corner_nav {
 }
 
 .ucharan_box {
+  position: fixed;
+  display: none;
+  word-spacing: normal;
   margin: 10px;
   padding-left: 20px;
   padding-right: 20px;
@@ -171,7 +174,7 @@ a.corner_nav {
   font-weight: bold;
   background-color: #1b1b1b;
   border: 1px solid #eeeeee;
-  word-spacing: normal;
+  border-radius: 10px;
 }
 
 .tatkara {

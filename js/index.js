@@ -242,7 +242,9 @@ function showUcharanBox(e, raw_div) {
     }
     div.style.left = left + "px";
     div.style.top = top + "px";
-    $("#"+div_id).toggle();
+    if (!(isWebkit && $("#paatth").hasClass("linebreak"))) {
+      $("#"+div_id).toggle();
+    }
   }
   return false;
 }
@@ -305,6 +307,7 @@ function setAng(set_ang, store) {
       '॥ ਜਪੁ ॥',
     ];
 
+    var ucharanPaath = '';
       $.each(lines, function(index,line){
         pangti = line.replace(ucharan_regex,'');
 
@@ -384,20 +387,20 @@ function setAng(set_ang, store) {
 
         // mangals
         spacingStart = spacingEnd = '';
-        spacing = '<span id="spacing">&ensp;&ensp;&ensp;</span>';
+        mangalSpacing = '<span id="spacing">&ensp;&ensp;&ensp;</span>';
         if (firstChar == '!') {
-          spacingStart = spacing;
+          spacingStart = mangalSpacing;
         }
         if (lastChar == '!') {
-          spacingEnd = spacing;
+          spacingEnd = mangalSpacing;
         }
         word = word.replace(/!/g,'');
         lastChar = word.at(-1);
 
         // linebreak mode (traditional larivaar)
-        spacingAfterTag = ' ';
+        spacingPaath = ' ';
         if ($("#paatth").hasClass("linebreak")) {
-          spacingAfterTag = '';
+          spacingPaath = '&ZeroWidthSpace;';
         }
 
         if (lastChar == '॥') {
@@ -421,39 +424,18 @@ function setAng(set_ang, store) {
 
         // ucharan
         if (hasUcharan && lastChar != '॥') {
-          var divLabel = "word_" + index;
-          newPaatth += 
-          '<div id="' +
-          divLabel +
-          '" class="ucharan_box" style="position: fixed; display:none;">' +
-          ucharanTip +
-          '</div>';
-
-          tag += 
-          ' onmouseover="showUcharanBox(event,' +
-          divLabel +
-          ')" onmouseout="showUcharanBox(event,' +
-          divLabel 
-          +')"';
+          var divLabel = `word_${index}`;
+          ucharanPaath += `<div id="${divLabel}" class="ucharan_box">${ucharanTip}</div>`;
+          tag += ` onmouseover="showUcharanBox(event,${divLabel})" onmouseout="showUcharanBox(event,${divLabel})"`;
         }
 
-        // generate html
-        newPaatth += 
-        spacingStart +
-        '<' +
-        tag +
-        '>' +
-        word +
-        // (tag == 'i' ? ' ' : '') +
-        '</' +
-        closing_tag +
-        '>' +
-        spacingAfterTag +
-        spacingEnd;
+        // generate word tag
+        newPaatth += `${spacingStart}<${tag}>${word}</${closing_tag}>${spacingPaath}${spacingEnd}`;
 
         // dedupe spacing between sirlekhs and mangals
-        newPaatth = newPaatth.replace(`${spacing}${spacing}`,`${spacing}`);
+        newPaatth = newPaatth.replace(`${mangalSpacing}${mangalSpacing}`,`${mangalSpacing}`);
       });
+    newPaatth += ucharanPaath;
 
     $("#paatth").html(newPaatth);
     //Check for bookmark, insert it and scroll to
@@ -463,7 +445,6 @@ function setAng(set_ang, store) {
     } else {
       window.scrollTo(0,0);
     }
-
   });
   if (store === true) {
     window.localStorage["ang"] = ang;
