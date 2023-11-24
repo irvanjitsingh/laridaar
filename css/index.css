@@ -361,6 +361,11 @@ div.ui-datepicker {
   word-break: break-all;
 }
 
+#paatth span.sirlekh_subscript {
+  font-size: 60%;
+  /* vertical-align: .1em; */
+}
+
 #paatth:after {
   clear: both;
   content: " ";

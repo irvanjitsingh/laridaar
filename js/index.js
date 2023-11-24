@@ -422,6 +422,28 @@ function setAng(set_ang, store) {
           word = word.slice(0,-1);
         }
 
+        // surtaal subscripts
+        ucharanTip = ucharanTip
+        .replace('₁₅', '')
+        .replace('₁', '')
+        .replace('₂', '')
+        .replace('₃', '')
+        .replace('₄', '')
+        .replace('₅', '')
+        .replace('₆', '')
+        .replace('₈', '');
+        word = word
+        .replace('₁₅', '(੧੫)')
+        .replace('₁', '(੧)')
+        .replace('₂', '(੨)')
+        .replace('₃', '(੩)')
+        .replace('₄', '(੪)')
+        .replace('₅', '(੫)')
+        .replace('₆', '(੬)')
+        .replace('₈', '(੮)');
+        word = word.replace('(', `</${closing_tag}>&ZeroWidthSpace;<sub><span class="sirlekh_subscript">`);
+        word = word.replace(')', '</sub>');
+
         // ucharan
         if (hasUcharan && lastChar != '॥') {
           var divLabel = `word_${index}`;
