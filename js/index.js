@@ -264,6 +264,27 @@ function setAng(set_ang, store) {
   var newPaatth = '';
   var endpoint = "paatth/" + ang + ".html";
   var ucharan_regex = /(.*)\}/;
+
+  var sirlekhList = [
+    'ਮਹਲਾ',
+    'ਮਹਲੇ',
+    'ਭਗਤਾ ਕੀ',
+    'ਭਗਤਾਂ ਕੀ',
+    'ਜੀਉ ਕੀ',
+    'ਜੀ ਕੀ',
+    'ਜੀ ਕੰੀ',
+    'ਰਾਗੁ',
+    'ਚਉਪਦੇ',
+    'ਕਾ ਪਦਾ',
+    'ਕੇ ਪਦੇ',
+    '॥ ਜਪੁ ॥',
+    'ਸਲੋਕ ਵਾਰਾਂ'
+  ];
+
+  var titleMangalAngList = [1, 14, 94, 151, 347, 489, 527, 537, 557, 595, 660, 
+    696, 711, 719, 721, 728, 795, 859, 876, 975, 984, 989, 1107, 1118, 
+    1125, 1168, 1197, 1254, 1294, 1319, 1327, 1352, 1385, 1410];
+
   $.get(endpoint, function(data) {
     var gurbani = data;
     var shabads = [];
@@ -290,49 +311,42 @@ function setAng(set_ang, store) {
       .replace(/ੲੰੀ/g,'ਈੰ');
     }
 
-    lines = gurbani.split('!');
+    var isTitleMangal = titleMangalAngList.includes(set_ang);
 
-    sirlekhList = [
-      'ਮਹਲਾ',
-      'ਮਹਲੇ',
-      'ਭਗਤਾ ਕੀ',
-      'ਭਗਤਾਂ ਕੀ',
-      'ਜੀਉ ਕੀ',
-      'ਜੀ ਕੀ',
-      'ਜੀ ਕੰੀ',
-      'ਰਾਗੁ',
-      'ਚਉਪਦੇ',
-      'ਕਾ ਪਦਾ',
-      'ਕੇ ਪਦੇ',
-      '॥ ਜਪੁ ॥',
-    ];
+    lines = gurbani.split('!');
 
     var ucharanPaath = '';
       $.each(lines, function(index,line){
         pangti = line.replace(ucharan_regex,'');
 
+        mangalType = (isTitleMangal == true && index <= 1) ? '$' : '!';
+        formattedPangti = `${mangalType}${pangti}${mangalType}`;
         // check for sirlekh
         if (sirlekhList.some(substring=>pangti.includes(substring))) {
           if (index > 0) {
             prevPangti = lines[index-1];
             if (prevPangti.includes('ੴ')) {
-              pangti = `!${pangti}!`;
+              pangti = formattedPangti;
             }
           }
           if (index < lines.length) {
             nextPangti = lines[index+1];
             if (nextPangti.includes('ੴ')) {
-              pangti = `!${pangti}!`;
+              pangti = formattedPangti;
             }
           }
         }
 
         // check for mangal
         if (pangti.includes('ੴ')) {
-          pangti = `!${pangti}!`;
-          // oangkaar with larger 'kaar'
-          // pangti = pangti.replace('ੴ', '\uF035'); // should be scaled up approx 1.5x
-          // pangti = pangti.replace('ੴ', '\uF036\uF037'); // should be shifted up approx 0.5x
+          pangti = formattedPangti;
+        }
+
+        // full mool mantar
+        if (set_ang == 1) {
+          if ((pangti == 'ਆਦਿ ਸਚੁ; ਜੁਗਾਦਿ ਸਚੁ ॥') || (pangti == 'ਹੈ ਭੀ ਸਚੁ; ਨਾਨਕ ਹੋਸੀ ਭੀ ਸਚੁ ॥੧॥')) {
+            pangti = `$${pangti}$`;
+          }
         }
 
         words = pangti.split(' ');
@@ -355,6 +369,7 @@ function setAng(set_ang, store) {
           for (word of words) {
             plain_word = word
             .replace('!','')
+            .replace('$','')
             .replace(';','')
             .replace(',','')
             .replace('.','');
@@ -385,29 +400,43 @@ function setAng(set_ang, store) {
           hasUcharan = true;
         }
 
-        // mangals
-        spacingStart = spacingEnd = '';
-        mangalSpacing = '<span id="spacing">&ensp;&ensp;&ensp;</span>';
-        if (firstChar == '!') {
-          spacingStart = mangalSpacing;
-        }
-        if (lastChar == '!') {
-          spacingEnd = mangalSpacing;
-        }
-        word = word.replace(/!/g,'');
-        lastChar = word.at(-1);
-
         // linebreak mode (traditional larivaar)
         spacingPaath = ' ';
         if ($("#paatth").hasClass("linebreak")) {
           spacingPaath = '&ZeroWidthSpace;';
         }
 
+        // mangals
+        spacingStart = spacingEnd = '';
+        mangalSpacing = '<span id="spacing">&ensp;&ensp;&ensp;</span>';
+        if (firstChar == '!') {
+          spacingStart = mangalSpacing;
+        } else if (firstChar == '$') {
+          // oangkaar with larger 'kaar'
+          // set line-height to 37% or vertical-align to 120%, alternative '\uF035'
+          word = word.replace('ੴ', '\uF036\uF037'); 
+
+          // add linebreaks around title mangal
+          spacingStart = `<div id="mangal_${index}" class="mangal_box">`;
+        }
+        if (lastChar == '!') {
+          spacingEnd = mangalSpacing;
+        } else if (lastChar == '$') {
+          spacingEnd = `</div>`;
+        }
+        word = word.replace(/!/g,'');
+        word = word.replace(/\$/g,'');
+        lastChar = word.at(-1);
+
         if (lastChar == '॥') {
           tag = 'i id="bookmark"';
           closing_tag = 'i';
         } else {
           tag = closing_tag = 'span';
+        }
+
+        if (word == '\uF036\uF037') {
+          tag += ' class="title_mangal"';
         }
 
         // vishrams
@@ -422,7 +451,7 @@ function setAng(set_ang, store) {
           word = word.slice(0,-1);
         }
 
-        // surtaal subscripts
+        // sirlekh surtaal subscripts
         ucharanTip = ucharanTip
         .replace('₁₅', '')
         .replace('₁', '')
@@ -441,7 +470,7 @@ function setAng(set_ang, store) {
         .replace('₅', '(੫)')
         .replace('₆', '(੬)')
         .replace('₈', '(੮)');
-        word = word.replace('(', `</${closing_tag}>&ZeroWidthSpace;<sub><span class="sirlekh_subscript">`);
+        word = word.replace('(', `</${closing_tag}>${spacingPaath}<span class="sirlekh_subscript"><sub>`);
         word = word.replace(')', '</sub>');
 
         // ucharan

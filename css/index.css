@@ -177,6 +177,23 @@ a.corner_nav {
   border-radius: 10px;
 }
 
+.mangal_box {
+  padding-bottom: 30px;
+  font-size: 120%;
+  display: flex;
+  justify-content: center;
+}
+
+#mangal_0 {
+  padding-top: 30px;
+}
+
+.title_mangal {
+  /* vertical-align: 120%; */
+  line-height: 37%;
+  word-spacing: -50px;
+}
+
 .tatkara {
   font-family: Akaash;
   word-spacing: normal;
@@ -363,7 +380,6 @@ div.ui-datepicker {
 
 #paatth span.sirlekh_subscript {
   font-size: 60%;
-  /* vertical-align: .1em; */
 }
 
 #paatth:after {
