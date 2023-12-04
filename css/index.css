@@ -163,7 +163,6 @@ a.corner_nav {
 .ucharan_box {
   position: fixed;
   display: none;
-  word-spacing: normal;
   margin: 10px;
   padding-left: 20px;
   padding-right: 20px;
@@ -177,26 +176,36 @@ a.corner_nav {
   border-radius: 10px;
 }
 
-.mangal_box {
+div.mangal_box {
   padding-bottom: 30px;
   font-size: 120%;
+  text-align: center;
+}
+
+#paatth.larreevaar div.mangal_box {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 #mangal_0 {
   padding-top: 30px;
 }
 
-.title_mangal {
-  /* vertical-align: 120%; */
-  line-height: 37%;
-  word-spacing: -50px;
+span.beej_mantar_title {
+  vertical-align: .4em;
+  /* vertical-align: 112%; */
+  line-height: 36%;
+  /* line-height: .4em; */
+}
+
+#paatth.larreevaar span.beej_mantar_title,
+#paatth.linebreak span.beej_mantar_title {
+  margin-right: -1.05em;
 }
 
 .tatkara {
   font-family: Akaash;
-  word-spacing: normal;
 }
 
 /* Numbers */
@@ -378,6 +387,27 @@ div.ui-datepicker {
   word-break: break-all;
 }
 
+#paatth i {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* spacing between pangtis */
+#paatth.larreevaar i {
+  margin-left: .25em;
+  margin-right: .25em;
+}
+
+/* join hadh with pangti as per traditional larivaar */
+#paatth.linebreak i {
+  margin-left: -.15em;
+  margin-right: -.15em;
+}
+
+#paatth.linebreak span#beej_mantar {
+  margin-right: -.2em;
+}
+
 #paatth span.sirlekh_subscript {
   font-size: 60%;
 }
@@ -421,6 +451,10 @@ div.ui-datepicker {
 #paatth.vishrams.linebreak.larreevaar_assistance .small-pause,
 .small-pause-color {
   color: #ffe100;
+}
+
+#paatth.ucharan i#ucharan_tip {
+  color: #ff5100;
 }
 
 #paatth i {

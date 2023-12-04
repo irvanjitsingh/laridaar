@@ -13,7 +13,7 @@ var larreevaar            = window.localStorage["larreevaar"]             || 1;
 var larreevaar_assistance = window.localStorage["larreevaar_assistance"]  || 0;
 var linebreak             = window.localStorage["linebreak"]              || 0;
 var vishrams              = window.localStorage["vishrams"]               || 0;
-var ucharan               = window.localStorage["ucharan"]                || 1;
+var ucharan               = window.localStorage["ucharan"]                || 0;
 var lang                  = window.localStorage["lang"]                   || "en";
 var bookmark_index        = window.localStorage["bookmark_index"]         || null;
 var bookmark_ang          = window.localStorage["bookmark_ang"]           || null;
@@ -74,6 +74,7 @@ function init() {
   if (linebreak == 1)            $("body, #paatth").addClass("linebreak");
   if (larreevaar_assistance == 1) $("#paatth, #larreevaar_assistance").addClass("larreevaar_assistance");
   if (vishrams == 1)              $("#paatth, #vishrams").addClass("vishrams");
+  if (ucharan == 1)              $("#paatth, #ucharan").addClass("ucharan");
   $(".setting[data-setting='swipe_nav']").data("on", swipe_nav);
   $(".setting[data-setting='dark']").data("on", dark);
   $(".setting[data-setting='ucharan']").data("on", ucharan);
@@ -226,7 +227,6 @@ function returnToAng() {
 }
 
 function showUcharanBox(e, raw_div) {
-  if (ucharan == 1) {
     var div_id = raw_div.id
     var div = document.getElementById(div_id);
     var text_length = div.innerHTML.length;
@@ -245,7 +245,6 @@ function showUcharanBox(e, raw_div) {
     if (!(isWebkit && $("#paatth").hasClass("linebreak"))) {
       $("#"+div_id).toggle();
     }
-  }
   return false;
 }
 
@@ -312,12 +311,23 @@ function setAng(set_ang, store) {
     }
 
     var isTitleMangal = titleMangalAngList.includes(set_ang);
+    var isLinebreak = $("#paatth").hasClass("linebreak");
 
     lines = gurbani.split('!');
 
     var ucharanPaath = '';
       $.each(lines, function(index,line){
         pangti = line.replace(ucharan_regex,'');
+
+        // join hadh to look like traditional larivaar
+        if (isLinebreak) {
+          if (index != 0 && index != (lines.length - 1)) {
+            pangti = `\uF042${pangti}`;
+          }
+          pangti = pangti
+          .replace(' ॥', '\uF042 ॥')
+          .replace('\uF042ੴ', 'ੴ');
+        }
 
         mangalType = (isTitleMangal == true && index <= 1) ? '$' : '!';
         formattedPangti = `${mangalType}${pangti}${mangalType}`;
@@ -344,8 +354,11 @@ function setAng(set_ang, store) {
 
         // full mool mantar
         if (set_ang == 1) {
-          if ((pangti == 'ਆਦਿ ਸਚੁ; ਜੁਗਾਦਿ ਸਚੁ ॥') || (pangti == 'ਹੈ ਭੀ ਸਚੁ; ਨਾਨਕ ਹੋਸੀ ਭੀ ਸਚੁ ॥੧॥')) {
+          if ((pangti.includes('ਆਦਿ ਸਚੁ; ਜੁਗਾਦਿ ਸਚੁ')) || (pangti.includes('ਹੈ ਭੀ ਸਚੁ; ਨਾਨਕ ਹੋਸੀ ਭੀ ਸਚੁ'))) {
             pangti = `$${pangti}$`;
+          }
+          if (pangti == '\uF042॥ ਜਪੁ\uF042 ॥') {
+            pangti = '$॥ \uF042ਜਪੁ\uF042 ॥$';
           }
         }
 
@@ -376,6 +389,9 @@ function setAng(set_ang, store) {
             if (plain_word in ucharan_map) {
               new_word = "{" + ucharan_map[plain_word] + "}" + word
               words_with_ucharan.push(new_word);
+            } else if (word.includes('॥')) {
+              new_word = "{" + ucharanTip + "}" + word
+              words_with_ucharan.push(new_word);      
             } else {
               words_with_ucharan.push(word);
             }
@@ -390,6 +406,7 @@ function setAng(set_ang, store) {
         lastChar = val.at(-1);
         word = val;
         hasUcharan = false;
+        isLinebreakActive = $("#paatth").hasClass("linebreak");
 
         // ucharan
         ucharanTip = '';
@@ -402,7 +419,7 @@ function setAng(set_ang, store) {
 
         // linebreak mode (traditional larivaar)
         spacingPaath = ' ';
-        if ($("#paatth").hasClass("linebreak")) {
+        if (isLinebreakActive) {
           spacingPaath = '&ZeroWidthSpace;';
         }
 
@@ -412,8 +429,7 @@ function setAng(set_ang, store) {
         if (firstChar == '!') {
           spacingStart = mangalSpacing;
         } else if (firstChar == '$') {
-          // oangkaar with larger 'kaar'
-          // set line-height to 37% or vertical-align to 120%, alternative '\uF035'
+          // oangkaar with larger 'kaar'; (single glyph: '\uF035')
           word = word.replace('ੴ', '\uF036\uF037'); 
 
           // add linebreaks around title mangal
@@ -429,14 +445,21 @@ function setAng(set_ang, store) {
         lastChar = word.at(-1);
 
         if (lastChar == '॥') {
-          tag = 'i id="bookmark"';
           closing_tag = 'i';
+          if (hasUcharan) {
+            tag = 'i id="ucharan_tip"';
+          } else {
+            tag = 'i';
+          }          
+        } else if (lastChar == 'ੴ') {
+          tag = 'span id="beej_mantar"';
+          closing_tag = 'span';
         } else {
           tag = closing_tag = 'span';
         }
 
         if (word == '\uF036\uF037') {
-          tag += ' class="title_mangal"';
+          tag += ' class="beej_mantar_title"';
         }
 
         // vishrams
@@ -474,7 +497,7 @@ function setAng(set_ang, store) {
         word = word.replace(')', '</sub>');
 
         // ucharan
-        if (hasUcharan && lastChar != '॥') {
+        if (hasUcharan) {
           var divLabel = `word_${index}`;
           ucharanPaath += `<div id="${divLabel}" class="ucharan_box">${ucharanTip}</div>`;
           tag += ` onmouseover="showUcharanBox(event,${divLabel})" onmouseout="showUcharanBox(event,${divLabel})"`;
@@ -491,7 +514,7 @@ function setAng(set_ang, store) {
     $("#paatth").html(newPaatth);
     //Check for bookmark, insert it and scroll to
     if (bookmark_ang == ang && bookmark_index > -1) {
-      $('#paatth *').eq(bookmark_index).after($('#bookmark *').addClass('fa fa-bookmark'));
+      $("#paatth *").eq(bookmark_index).after($("<i></i>").addClass("fa fa-bookmark"));
       window.scrollTo(0,$('i.fa.fa-bookmark').offset().top-58);
     } else {
       window.scrollTo(0,0);
@@ -510,7 +533,9 @@ function setAng(set_ang, store) {
   } else {
     //Loading for the first time
     //Check for bookmark, insert it and scroll to
-    if (bookmark_ang == ang && bookmark_index > -1) $('#paatth *').eq(bookmark_index).after($('#bookmark *').addClass('fa fa-bookmark'));
+    if (bookmark_ang == ang && bookmark_index > -1) {
+      $("#paatth *").eq(bookmark_index).after($("<i></i>").addClass("fa fa-bookmark"));
+    }
   }
 }
 
@@ -625,7 +650,7 @@ $(function() {
           $("body, #paatth").addClass(setting);
           break;
         case "ucharan":
-          ucharan = 1;
+          $("#paatth").addClass(setting);
           break;
         case "swipe_nav":
           swipe_nav = 1;
@@ -664,7 +689,7 @@ $(function() {
           $("body, #paatth").removeClass(setting);
           break;
         case "ucharan":
-          ucharan = 0;
+          $("#paatth").removeClass(setting);
           break;
         case "swipe_nav":
           swipe_nav = 0;
