@@ -168,7 +168,7 @@ a.corner_nav {
   padding-right: 20px;
   padding-top: 5px;
   padding-bottom: 5px;
-  font-size: 20px;
+  font-size: 75%;
   color:#2AAAE2;
   font-weight: bold;
   background-color: #1b1b1b;
@@ -395,7 +395,7 @@ div.ui-datepicker {
 /* spacing between pangtis */
 #paatth.larreevaar i {
   margin-left: .25em;
-  margin-right: .25em;
+  margin-right: .35em;
 }
 
 /* join hadh with pangti as per traditional larivaar */
@@ -404,6 +404,7 @@ div.ui-datepicker {
   margin-right: -.15em;
 }
 
+#paatth.larreevaar span#beej_mantar,
 #paatth.linebreak span#beej_mantar {
   margin-right: -.2em;
 }

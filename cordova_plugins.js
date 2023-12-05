@@ -1,36 +1,6 @@
 cordova.define('cordova/plugin_list', function(require, exports, module) {
 module.exports = [
     {
-        "file": "plugins/cordova-plugin-statusbar/www/statusbar.js",
-        "id": "cordova-plugin-statusbar.statusbar",
-        "pluginId": "cordova-plugin-statusbar",
-        "clobbers": [
-            "window.StatusBar"
-        ]
-    },
-    {
-        "file": "plugins/cordova-plugin-statusbar/src/browser/StatusBarProxy.js",
-        "id": "cordova-plugin-statusbar.StatusBarProxy",
-        "pluginId": "cordova-plugin-statusbar",
-        "runs": true
-    },
-    {
-        "file": "plugins/cordova-plugin-insomnia/www/Insomnia.js",
-        "id": "cordova-plugin-insomnia.Insomnia",
-        "pluginId": "cordova-plugin-insomnia",
-        "clobbers": [
-            "window.plugins.insomnia"
-        ]
-    },
-    {
-        "file": "plugins/cordova-plugin-insomnia/src/browser/Insomnia.js",
-        "id": "cordova-plugin-insomnia.InsomniaProxy",
-        "pluginId": "cordova-plugin-insomnia",
-        "merges": [
-            "window.plugins.insomnia"
-        ]
-    },
-    {
         "file": "plugins/cordova-plugin-browsertab/www/browsertab.js",
         "id": "cordova-plugin-browsertab.BrowserTab",
         "pluginId": "cordova-plugin-browsertab",
@@ -53,11 +23,19 @@ module.exports = [
         "runs": true
     },
     {
-        "file": "plugins/cordova-plugin-screen-orientation/www/screenorientation.js",
-        "id": "cordova-plugin-screen-orientation.screenorientation",
-        "pluginId": "cordova-plugin-screen-orientation",
+        "file": "plugins/cordova-plugin-insomnia/www/Insomnia.js",
+        "id": "cordova-plugin-insomnia.Insomnia",
+        "pluginId": "cordova-plugin-insomnia",
         "clobbers": [
-            "cordova.plugins.screenorientation"
+            "window.plugins.insomnia"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-insomnia/src/browser/Insomnia.js",
+        "id": "cordova-plugin-insomnia.InsomniaProxy",
+        "pluginId": "cordova-plugin-insomnia",
+        "merges": [
+            "window.plugins.insomnia"
         ]
     },
     {
@@ -65,8 +43,7 @@ module.exports = [
         "id": "cordova-plugin-network-information.network",
         "pluginId": "cordova-plugin-network-information",
         "clobbers": [
-            "navigator.connection",
-            "navigator.network.connection"
+            "navigator.connection"
         ]
     },
     {
@@ -82,19 +59,49 @@ module.exports = [
         "id": "cordova-plugin-network-information.NetworkInfoProxy",
         "pluginId": "cordova-plugin-network-information",
         "runs": true
+    },
+    {
+        "file": "plugins/cordova-plugin-screen-orientation/www/screenorientation.js",
+        "id": "cordova-plugin-screen-orientation.screenorientation",
+        "pluginId": "cordova-plugin-screen-orientation",
+        "clobbers": [
+            "cordova.plugins.screenorientation",
+            "screen.orientation"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-statusbar/www/statusbar.js",
+        "id": "cordova-plugin-statusbar.statusbar",
+        "pluginId": "cordova-plugin-statusbar",
+        "clobbers": [
+            "window.StatusBar"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-statusbar/src/browser/StatusBarProxy.js",
+        "id": "cordova-plugin-statusbar.StatusBarProxy",
+        "pluginId": "cordova-plugin-statusbar",
+        "runs": true
+    },
+    {
+        "file": "plugins/es6-promise-plugin/www/promise.js",
+        "id": "es6-promise-plugin.Promise",
+        "pluginId": "es6-promise-plugin",
+        "runs": true
     }
 ];
 module.exports.metadata = 
 // TOP OF METADATA
 {
-    "cordova-plugin-whitelist": "1.3.3",
-    "cordova-plugin-statusbar": "2.4.3",
-    "cordova-plugin-insomnia": "4.3.0",
     "cordova-plugin-compat": "1.2.0",
     "cordova-plugin-browsertab": "0.2.0",
-    "cordova-plugin-device": "1.1.7",
-    "cordova-plugin-screen-orientation": "2.0.2",
-    "cordova-plugin-network-information": "2.0.2"
+    "cordova-plugin-device": "2.1.0",
+    "cordova-plugin-insomnia": "4.3.0",
+    "cordova-plugin-network-information": "3.0.0",
+    "cordova-plugin-screen-orientation": "3.0.4",
+    "cordova-plugin-statusbar": "4.0.0",
+    "cordova-plugin-whitelist": "1.3.5",
+    "es6-promise-plugin": "4.2.2"
 }
 // BOTTOM OF METADATA
 });
