@@ -326,6 +326,7 @@ function setAng(set_ang, store) {
           }
           pangti = pangti
           .replace(' ॥', '\uF042 ॥')
+          .replace('॥ ਰਹਾਉ ॥', '॥ \uF042ਰਹਾਉ\uF042 ॥')
           .replace('\uF042ੴ', 'ੴ');
         }
 
@@ -401,6 +402,7 @@ function setAng(set_ang, store) {
           shabads = shabads.concat(words);
         }
       });
+      var prevWordWasMangal = false;
       $.each(shabads, function(index,val){
         firstChar = val.at(0);
         lastChar = val.at(-1);
@@ -424,21 +426,31 @@ function setAng(set_ang, store) {
         }
 
         // mangals
+        if (prevWordWasMangal) {
+          word = word.replace('\uF042', '');
+          prevWordWasMangal = false;
+        }
+
         spacingStart = spacingEnd = '';
         mangalSpacing = '<span id="spacing">&ensp;&ensp;&ensp;</span>';
         if (firstChar == '!') {
           spacingStart = mangalSpacing;
+          word = word.replace('!\uF042', '!');
         } else if (firstChar == '$') {
           // oangkaar with larger 'kaar'; (single glyph: '\uF035')
           word = word.replace('ੴ', '\uF036\uF037'); 
 
           // add linebreaks around title mangal
           spacingStart = `<div id="mangal_${index}" class="mangal_box">`;
+
+          word = word.replace('$\uF042', '$');
         }
         if (lastChar == '!') {
           spacingEnd = mangalSpacing;
+          prevWordWasMangal = true;
         } else if (lastChar == '$') {
           spacingEnd = `</div>`;
+          prevWordWasMangal = true;
         }
         word = word.replace(/!/g,'');
         word = word.replace(/\$/g,'');

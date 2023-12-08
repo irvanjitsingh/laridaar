@@ -168,7 +168,7 @@ a.corner_nav {
   padding-right: 20px;
   padding-top: 5px;
   padding-bottom: 5px;
-  font-size: 75%;
+  font-size: 70%;
   color:#2AAAE2;
   font-weight: bold;
   background-color: #1b1b1b;
@@ -394,8 +394,8 @@ div.ui-datepicker {
 
 /* spacing between pangtis */
 #paatth.larreevaar i {
-  margin-left: .25em;
-  margin-right: .35em;
+  padding-left: .25em;
+  padding-right: .25em;
 }
 
 /* join hadh with pangti as per traditional larivaar */
