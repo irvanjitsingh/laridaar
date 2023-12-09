@@ -288,16 +288,15 @@ function setAng(set_ang, store) {
     var gurbani = data;
     var shabads = [];
 
-    // these characters do not render on WebKit-based browsers (Safari + all iOS browsers)
-    // they render on non-WebKit browsers but are not legible so we use font-provided
-    // the private-use characters (F0) do not render correctly with ੲ so we use the standard rendering here
+    // use private-use characters for 'bindi/tippi before bihari' for legibility
+    // exception: ਈ since these characters do not render correctly with it
     gurbani = gurbani
     .replace(/ਂੀ/g,'\u0A40\uF03D') // bindi before bihaari
     .replace(/ੰੀ/g,'\u0A40\uF034') // tipi before bihaari
     .replace(/\u0A72\u0A40\uF03D/g,'ੲਂੀ') // bindi before bihaari
     .replace(/\u0A72\u0A40\uF034/g,'ੲੰੀ') // tipi before bihaari
 
-    // these characters render on all browsers but are not legible
+    // use private-use characters for these characters for legibility
     .replace(/ੑੁ/g,'\uF040') // halant and unkar
     .replace(/ੑੂ/g,'\uF041') // halant and dulainkar
     .replace(/ੵੁ/g,'\uF043') // yakash and unkar
@@ -307,7 +306,7 @@ function setAng(set_ang, store) {
     if (isWebkit) {
       gurbani = gurbani
       .replace(/ੲਂੀ/g,'ਈਂ')
-      .replace(/ੲੰੀ/g,'ਈੰ');
+      .replace(/ੲੰੀ/g,'\u0A08\u0A70');
     }
 
     var isTitleMangal = titleMangalAngList.includes(set_ang);
