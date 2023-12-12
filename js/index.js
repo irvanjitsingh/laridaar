@@ -288,26 +288,16 @@ function setAng(set_ang, store) {
     var gurbani = data;
     var shabads = [];
 
-    // use private-use characters for 'bindi/tippi before bihari' for legibility
-    // exception: ਈ since these characters do not render correctly with it
+    // use private-use characters for legibility and to render on WebKit
     gurbani = gurbani
-    .replace(/ਂੀ/g,'\u0A40\uF03D') // bindi before bihaari
-    .replace(/ੰੀ/g,'\u0A40\uF034') // tipi before bihaari
-    .replace(/\u0A72\u0A40\uF03D/g,'ੲਂੀ') // bindi before bihaari
-    .replace(/\u0A72\u0A40\uF034/g,'ੲੰੀ') // tipi before bihaari
-
-    // use private-use characters for these characters for legibility
-    .replace(/ੑੁ/g,'\uF040') // halant and unkar
-    .replace(/ੑੂ/g,'\uF041') // halant and dulainkar
-    .replace(/ੵੁ/g,'\uF043') // yakash and unkar
-    .replace(/ੵੂ/g,'\uF044'); // yakash and dulainkar
-
-    // both standard and private-use characters don't render on correctly with ੲ on Webkit so we swap the characters
-    if (isWebkit) {
-      gurbani = gurbani
-      .replace(/ੲਂੀ/g,'ਈਂ')
-      .replace(/ੲੰੀ/g,'\u0A08\u0A70');
-    }
+    .replace(/ਂੀ/g,'\u0A40\uF03D') // ਂ+ੀ
+    .replace(/ੰੀ/g,'\u0A40\uF034') // ੰ+ੀ
+    .replace(/\u0A72\u0A40\uF03D/g,'\u0A08\uF03D') // ਂ+ਈ
+    .replace(/\u0A72\u0A40\uF034/g,'\u0A08\uF034') // ੰ+ਈ
+    .replace(/ੑੁ/g,'\uF040')
+    .replace(/ੑੂ/g,'\uF041')
+    .replace(/ੵੁ/g,'\uF043')
+    .replace(/ੵੂ/g,'\uF044');
 
     var isTitleMangal = titleMangalAngList.includes(set_ang);
     var isLinebreak = $("#paatth").hasClass("linebreak");
