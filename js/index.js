@@ -412,15 +412,30 @@ function setAng(set_ang, store) {
         // linebreak mode (traditional larivaar)
         spacingPaath = ' ';
         if (isLinebreakActive) {
+          numSpacing = '<span id="num_spacing">&hairsp;</span>';
+          word = word
+          .replace('੧\uF042', `੧${numSpacing}`)
+          .replace('੨\uF042', `੨${numSpacing}`)
+          .replace('੩\uF042', `੩${numSpacing}`)
+          .replace('੪\uF042', `੪${numSpacing}`)
+          .replace('੫\uF042', `੫${numSpacing}`)
+          .replace('੬\uF042', `੬${numSpacing}`)
+          .replace('੭\uF042', `੬${numSpacing}`)
+          .replace('੮\uF042', `੬${numSpacing}`)
+          .replace('੯\uF042', `੯${numSpacing}`)
+          .replace('੦\uF042', `੦${numSpacing}`)
+          .replace('\uF03D\uF042', '\uF03D')
+          .replace('\uF034\uF042', '\uF034');
+
+          if (prevWordWasMangal) {
+            word = word.replace('\uF042', '');
+            prevWordWasMangal = false;
+          }
+
           spacingPaath = '&ZeroWidthSpace;';
         }
 
         // mangals
-        if (prevWordWasMangal) {
-          word = word.replace('\uF042', '');
-          prevWordWasMangal = false;
-        }
-
         spacingStart = spacingEnd = '';
         mangalSpacing = '<span id="spacing">&ensp;&ensp;&ensp;</span>';
         if (firstChar == '!') {
