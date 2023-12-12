@@ -385,7 +385,8 @@ function setAng(set_ang, store) {
             .replace('$','')
             .replace(';','')
             .replace(',','')
-            .replace('.','');
+            .replace('.','')
+            .replace('\uF042','');
             if (plain_word in ucharan_map) {
               new_word = "{" + ucharan_map[plain_word] + "}" + word
               words_with_ucharan.push(new_word);
