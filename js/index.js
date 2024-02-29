@@ -1,7 +1,7 @@
 //Settings
 var ang                   = window.localStorage["ang"]                    || 1;
-var font_size             = window.localStorage["font_size"]              || 20;
-var dark                  = window.localStorage["dark"]                   || 1;
+var font_size             = window.localStorage["font_size"]              || 30;
+var dark                  = window.localStorage["dark"]                   || 0;
 var samaaptee             = window.localStorage["samaaptee"]              || null;
 var daily                 = window.localStorage["daily"]                  || null;
 var today_date            = window.localStorage["today_date"]             || null;
@@ -9,11 +9,13 @@ var today_start           = window.localStorage["today_start"]            || nul
 var today_read            = ang - today_start;
 var daily_total           = 0;
 var swipe_nav             = window.localStorage["swipe_nav"]              || 0;
-var larreevaar            = window.localStorage["larreevaar"]             || 1;
+var larreevaar            = window.localStorage["larreevaar"]             || 0;
 var larreevaar_assistance = window.localStorage["larreevaar_assistance"]  || 0;
 var linebreak             = window.localStorage["linebreak"]              || 0;
-var vishrams              = window.localStorage["vishrams"]               || 0;
+var vishrams              = window.localStorage["vishrams"]               || 1;
 var ucharan               = window.localStorage["ucharan"]                || 0;
+var bold_font             = window.localStorage["bold_font"]              || 0;
+var is_punjabi            = window.localStorage["punjabi"]                || 0;
 var lang                  = window.localStorage["lang"]                   || "en";
 var bookmark_index        = window.localStorage["bookmark_index"]         || null;
 var bookmark_ang          = window.localStorage["bookmark_ang"]           || null;
@@ -21,6 +23,7 @@ var backButtonClose       = false;
 var isOnline              = false;
 var keep_awake            = window.localStorage["keep_awake"]             || 0;
 var lefthand              = window.localStorage["lefthand"]               || 0;
+var isDefaultAudio        = window.localStorage["is_default_audio"]       || 1;
 var isWebkit              = navigator.userAgent.indexOf('AppleWebKit') != -1
 var isChromium            = navigator.userAgent.indexOf('Chromium') != -1
 
@@ -78,12 +81,19 @@ function init() {
   $(".setting[data-setting='swipe_nav']").data("on", swipe_nav);
   $(".setting[data-setting='dark']").data("on", dark);
   $(".setting[data-setting='ucharan']").data("on", ucharan);
+  $(".setting[data-setting='is_punjabi']").data("on", is_punjabi);
+  $(".setting[data-setting='bold_font']").data("on", bold_font);
   if (dark == 1) {
     $("body").addClass("dark");
     StatusBar.backgroundColorByHexString('#222');
     StatusBar.styleLightContent();
   } else {
     StatusBar.styleDefault();
+  }
+  if (is_punjabi) {
+    lang = "pa";
+  } else {
+    lang = "en";
   }
   $(".setting[data-setting='keep_awake']").data("on", keep_awake);
   if (keep_awake == 1)            window.plugins.insomnia.keepAwake();
@@ -243,6 +253,8 @@ function showUcharanBox(e, raw_div) {
     div.style.left = left + "px";
     div.style.top = top + "px";
     if (!(isWebkit && $("#paatth").hasClass("linebreak"))) {
+      $("#"+div_id).toggle();
+    } else if (ucharan == 1) {
       $("#"+div_id).toggle();
     }
   return false;
@@ -529,6 +541,15 @@ function setAng(set_ang, store) {
     newPaatth += ucharanPaath;
 
     $("#paatth").html(newPaatth);
+
+    // audio stream
+    if (isDefaultAudio == 1) {
+      playSehajPaathAudio(ang, false);
+    } else {
+      setSehajPaathAng(ang);
+    }
+    setPaathBodhAngRange(ang);
+
     //Check for bookmark, insert it and scroll to
     if (bookmark_ang == ang && bookmark_index > -1) {
       $("#paatth *").eq(bookmark_index).after($("<i></i>").addClass("fa fa-bookmark"));
@@ -554,6 +575,69 @@ function setAng(set_ang, store) {
       $("#paatth *").eq(bookmark_index).after($("<i></i>").addClass("fa fa-bookmark"));
     }
   }
+}
+
+function setSehajPaathAng(ang) {
+  var audioLink = `<a href="javascript:playSehajPaathAudio(${ang}, true)">Santhiya Audio Ang ${ang}</a>`;
+  $("#audio_link_sp").html(audioLink);
+}
+
+function setPaathBodhAngRange(ang) {
+  var section = "";
+  if (ang >= 1 && ang < 388) {
+    section = "0001-0388";
+  } else if (ang >= 388 && ang < 807) {
+    section = "0388-0807";
+  } else if (ang >= 807 && ang < 1231) {
+    section = "0807-1231";
+  } else if (ang >= 1231 && ang < 1430) {
+    section = "1231-1430";
+  }
+
+  var tracks = pb_audio.filter(function (track) {
+    return track.start <= ang && track.end > ang;
+  });
+  var track = tracks[0];
+  var range = `${track.start}-${track.end}`;
+  var url = `https://www.gurmatveechar.com/audios/Gurbani_Santhya/Bhindran_Taksal_Santhya/Ang_${section}/${track.id}--Bhindran.Taksal.Santhya--Ang.${track.suffix}.mp3`;
+  var audioLink = `<a href="javascript:playPaathBodhAudio('${url}', '${range}', '${ang}')">Paath Bodh Audio Angs ${range}</a>`;
+  $("#audio_link_bp").html(audioLink);
+}
+
+// ang-range audio paath
+function playPaathBodhAudio(url, range, ang) {
+  var nowPlaying = `Paath Bodh, Angs ${range}`;
+  $("#now_playing").html(nowPlaying);
+  setSehajPaathAng(ang);
+  isDefaultAudio = 0;
+  playAudio(url, true);
+}
+
+// ang-wise audio
+function playSehajPaathAudio(angNumber, autoPlay) {
+  var formattedAng = String(angNumber).padStart(4, '0');
+  var url = `https://media.gursevak.com/media/Sehaj_Paath_Pagewise/Sehaj_Paath_16kbps/${formattedAng}.mp3`;
+  var nowPlaying = `Santhiya, Ang ${angNumber}`;
+  $("#now_playing").html(nowPlaying);
+  isDefaultAudio = 1;
+  playAudio(url, autoPlay);
+}
+
+function playAudio(streamUrl, autoPlay) {
+  var audioConfig = (autoPlay == true) ? 'autoplay' : '';
+  var audioSource = `<audio controls ${audioConfig} preload="none" id="player"><source src="${streamUrl}" type="audio/mpeg"></audio>`;
+  $("#audio_stream").html(audioSource);
+}
+
+function toggleLanguage(new_lang) {
+  lang = new_lang;
+  $("body").removeClass (function (index, css) {
+    return (css.match (/\blang_\S+/g) || []).join(' ');
+  });
+  $("body").addClass("lang_" + lang);
+  window.localStorage["lang"] = lang;
+  $(".setting[data-setting='lang']").removeClass("cur");
+  $(".setting[data-setting='lang'][data-value='" + lang + "']").addClass("cur");
 }
 
 function onBackButton(esc_button) {
@@ -668,6 +752,7 @@ $(function() {
           break;
         case "ucharan":
           $("#paatth").addClass(setting);
+          ucharan = 1;
           break;
         case "swipe_nav":
           swipe_nav = 1;
@@ -676,6 +761,12 @@ $(function() {
           $("body").addClass(setting);
           StatusBar.backgroundColorByHexString('#222');
           StatusBar.styleLightContent();
+          break;
+        case "bold_font":
+          $("body").addClass(setting);
+          break;
+        case "is_punjabi":
+          toggleLanguage("pa");
           break;
         case "keep_awake":
           window.plugins.insomnia.keepAwake();
@@ -707,6 +798,7 @@ $(function() {
           break;
         case "ucharan":
           $("#paatth").removeClass(setting);
+          ucharan = 0;
           break;
         case "swipe_nav":
           swipe_nav = 0;
@@ -715,6 +807,12 @@ $(function() {
           $("body").removeClass(setting);
           StatusBar.backgroundColorByHexString('#fff');
           StatusBar.styleDefault();
+          break;
+        case "bold_font":
+          $("body").removeClass(setting);
+          break;
+        case "is_punjabi":
+          toggleLanguage("en");
           break;
         case "keep_awake":
           window.plugins.insomnia.allowSleepAgain();
@@ -725,19 +823,6 @@ $(function() {
       }
       if ($(this).hasClass("checkbox")) {
         $(this).find("i.fa-check-square-o").removeClass("fa-check-square-o").addClass("fa-square-o");
-      }
-    } else {
-      switch (setting) {
-        case "lang":
-          lang = $(this).data("value");
-          $("body").removeClass (function (index, css) {
-            return (css.match (/\blang_\S+/g) || []).join(' ');
-          });
-          $("body").addClass("lang_" + lang);
-          window.localStorage["lang"] = lang;
-          $(".setting[data-setting='lang']").removeClass("cur");
-          $(".setting[data-setting='lang'][data-value='" + lang + "']").addClass("cur");
-          break;
       }
     }
   });
@@ -860,6 +945,11 @@ $(function() {
             $("#larreevaar_assistance").click();
           }
           break;
+        //b
+        case 98:
+          event.preventDefault();
+          $("#bold_font_setting").click();
+          break;
         //v
         case 118:
           event.preventDefault();
@@ -898,3 +988,150 @@ $(function() {
     }
   });
 });
+
+var pb_audio = [
+  {"id": "002", "suffix": "1-8", "start": 1, "end": 8},
+  {"id": "004", "suffix": "8-19", "start": 8, "end": 19},
+  {"id": "005", "suffix": "19-21", "start": 19, "end": 21},
+  {"id": "006", "suffix": "21-23", "start": 21, "end": 23},
+  {"id": "007", "suffix": "23-36", "start": 23, "end": 36},
+  {"id": "008", "suffix": "36-46.%26.Q.and.A", "start": 36, "end": 46},
+  {"id": "009", "suffix": "46-56", "start": 46, "end": 56},
+  {"id": "010", "suffix": "56-64", "start": 56, "end": 64},
+  {"id": "011", "suffix": "64-79", "start": 64, "end": 79},
+  {"id": "012", "suffix": "79-81", "start": 79, "end": 81},
+  {"id": "013", "suffix": "81-98", "start": 81, "end": 98},
+  {"id": "014", "suffix": "98-100", "start": 98, "end": 100},
+  {"id": "015", "suffix": "100-114", "start": 100, "end": 114},
+  {"id": "016", "suffix": "114-126", "start": 114, "end": 126},
+  {"id": "018", "suffix": "126-140", "start": 126, "end": 140},
+  {"id": "019", "suffix": "140-150", "start": 140, "end": 150},
+  {"id": "020", "suffix": "151-166", "start": 151, "end": 166},
+  {"id": "021", "suffix": "166-176", "start": 166, "end": 176},
+  {"id": "023", "suffix": "176-179", "start": 176, "end": 179},
+  {"id": "024", "suffix": "189-190", "start": 189, "end": 190},
+  {"id": "026", "suffix": "193-204", "start": 193, "end": 204},
+  {"id": "027", "suffix": "204-209", "start": 204, "end": 209},
+  {"id": "029", "suffix": "210-223", "start": 210, "end": 223},
+  {"id": "030", "suffix": "223-235", "start": 223, "end": 235},
+  {"id": "031", "suffix": "235-245", "start": 235, "end": 245},
+  {"id": "032", "suffix": "245-250", "start": 245, "end": 250},
+  {"id": "033", "suffix": "250-258", "start": 250, "end": 258},
+  {"id": "034", "suffix": "258-259", "start": 258, "end": 259},
+  {"id": "035", "suffix": "259-263", "start": 259, "end": 263},
+  {"id": "036", "suffix": "263-275", "start": 263, "end": 275},
+  {"id": "037", "suffix": "275-286", "start": 275, "end": 286},
+  {"id": "038", "suffix": "286-301", "start": 286, "end": 301},
+  {"id": "039", "suffix": "301-317", "start": 301, "end": 317},
+  {"id": "040", "suffix": "317-318", "start": 317, "end": 318},
+  {"id": "041", "suffix": "318-327", "start": 318, "end": 327},
+  {"id": "042", "suffix": "327-331", "start": 327, "end": 331},
+  {"id": "043", "suffix": "331-340", "start": 331, "end": 340},
+  {"id": "044", "suffix": "340-346", "start": 340, "end": 346},
+  {"id": "045", "suffix": "347-362", "start": 347, "end": 362},
+  {"id": "046", "suffix": "362", "start": 362, "end": 362},
+  {"id": "047", "suffix": "362-376", "start": 362, "end": 376},
+  {"id": "049", "suffix": "376-388", "start": 376, "end": 388},
+  {"id": "050", "suffix": "388-400", "start": 388, "end": 400},
+  {"id": "051", "suffix": "400-416", "start": 400, "end": 416},
+  {"id": "052", "suffix": "416-434", "start": 416, "end": 434},
+  {"id": "053", "suffix": "434-449", "start": 434, "end": 449},
+  {"id": "054", "suffix": "449-462", "start": 449, "end": 462},
+  {"id": "056", "suffix": "465-473", "start": 462, "end": 465},
+  {"id": "057", "suffix": "473-477", "start": 465, "end": 473},
+  {"id": "058", "suffix": "477-478", "start": 473, "end": 477},
+  {"id": "059", "suffix": "478-488", "start": 477, "end": 478},
+  {"id": "060", "suffix": "489-503", "start": 478, "end": 488},
+  {"id": "061", "suffix": "503-515", "start": 489, "end": 503},
+  {"id": "062", "suffix": "515-517", "start": 515, "end": 517},
+  {"id": "063", "suffix": "517-528", "start": 517, "end": 528},
+  {"id": "064", "suffix": "528-541", "start": 528, "end": 541},
+  {"id": "066", "suffix": "541-555", "start": 541, "end": 555},
+  {"id": "067", "suffix": "555-570", "start": 555, "end": 570},
+  {"id": "068", "suffix": "570-584", "start": 570, "end": 584},
+  {"id": "069", "suffix": "584-598", "start": 584, "end": 598},
+  {"id": "070", "suffix": "598-610", "start": 598, "end": 610},
+  {"id": "071", "suffix": "610-620", "start": 610, "end": 620},
+  {"id": "072", "suffix": "620-625", "start": 620, "end": 625},
+  {"id": "073", "suffix": "625-644", "start": 625, "end": 644},
+  {"id": "074", "suffix": "644-656", "start": 644, "end": 656},
+  {"id": "076", "suffix": "656-666", "start": 656, "end": 666},
+  {"id": "077", "suffix": "666-675", "start": 666, "end": 675},
+  {"id": "078", "suffix": "675-678", "start": 675, "end": 678},
+  {"id": "079", "suffix": "678-694", "start": 678, "end": 694},
+  {"id": "080", "suffix": "694-705", "start": 694, "end": 705},
+  {"id": "082", "suffix": "705-717", "start": 705, "end": 717},
+  {"id": "083", "suffix": "718-727", "start": 718, "end": 727},
+  {"id": "084", "suffix": "728-733", "start": 728, "end": 733},
+  {"id": "085", "suffix": "733-737", "start": 733, "end": 737},
+  {"id": "086", "suffix": "737-739", "start": 737, "end": 739},
+  {"id": "087", "suffix": "739-753", "start": 739, "end": 753},
+  {"id": "088", "suffix": "753-766", "start": 753, "end": 766},
+  {"id": "089", "suffix": "766-778", "start": 766, "end": 778},
+  {"id": "090", "suffix": "778-790", "start": 778, "end": 790},
+  {"id": "091", "suffix": "790-793", "start": 790, "end": 793},
+  {"id": "093", "suffix": "793-807", "start": 793, "end": 807},
+  {"id": "094", "suffix": "807-820", "start": 807, "end": 820},
+  {"id": "095", "suffix": "820-831", "start": 820, "end": 831},
+  {"id": "096", "suffix": "831-844.%26.Q.and.A", "start": 831, "end": 844},
+  {"id": "097", "suffix": "844-858", "start": 844, "end": 858},
+  {"id": "098", "suffix": "859-875", "start": 859, "end": 875},
+  {"id": "099", "suffix": "876-893", "start": 876, "end": 893},
+  {"id": "100", "suffix": "893-906", "start": 893, "end": 906},
+  {"id": "103", "suffix": "906-920", "start": 906, "end": 920},
+  {"id": "104", "suffix": "920-934", "start": 920, "end": 934},
+  {"id": "105", "suffix": "934-942", "start": 934, "end": 942},
+  {"id": "106", "suffix": "942-946", "start": 942, "end": 946},
+  {"id": "107", "suffix": "947-956", "start": 947, "end": 956},
+  {"id": "108", "suffix": "957-960", "start": 957, "end": 960},
+  {"id": "110", "suffix": "960-974", "start": 960, "end": 974},
+  {"id": "111", "suffix": "975-989", "start": 975, "end": 989},
+  {"id": "112", "suffix": "990-1006", "start": 990, "end": 1006},
+  {"id": "113", "suffix": "1006-1018", "start": 1006, "end": 1018},
+  {"id": "114", "suffix": "1018-1030", "start": 1018, "end": 1030},
+  {"id": "115", "suffix": "1030-1049", "start": 1030, "end": 1049},
+  {"id": "116", "suffix": "1049-1054", "start": 1049, "end": 1054},
+  {"id": "118", "suffix": "1054-1067", "start": 1054, "end": 1067},
+  {"id": "119", "suffix": "1067-1080", "start": 1067, "end": 1080},
+  {"id": "120", "suffix": "1080-1096", "start": 1080, "end": 1096},
+  {"id": "121", "suffix": "1096-1106", "start": 1096, "end": 1106},
+  {"id": "123", "suffix": "1107-1119", "start": 1107, "end": 1119},
+  {"id": "124", "suffix": "1119-1130", "start": 1119, "end": 1130},
+  {"id": "125", "suffix": "11301144", "start": 1130, "end": 1144},
+  {"id": "126", "suffix": "1144-1150.%26.Q.and.A", "start": 1144, "end": 1150},
+  {"id": "127", "suffix": "1150-1162", "start": 1150, "end": 1162},
+  {"id": "128", "suffix": "1162-1170", "start": 1162, "end": 1170},
+  {"id": "129", "suffix": "1171-1183", "start": 1171, "end": 1183},
+  {"id": "130", "suffix": "1183-1191", "start": 1183, "end": 1191},
+  {"id": "132", "suffix": "1191-1203", "start": 1191, "end": 1203},
+  {"id": "133", "suffix": "1203-1212", "start": 1203, "end": 1212},
+  {"id": "134", "suffix": "1212-1231", "start": 1212, "end": 1231},
+  {"id": "135", "suffix": "1231-1233.%26.Q.and.A", "start": 1231, "end": 1233},
+  {"id": "136", "suffix": "1233-1242", "start": 1233, "end": 1242},
+  {"id": "137", "suffix": "1242-1251", "start": 1242, "end": 1251},
+  {"id": "138", "suffix": "1251-1262", "start": 1251, "end": 1262},
+  {"id": "139", "suffix": "1262-1265", "start": 1262, "end": 1265},
+  {"id": "141", "suffix": "1276-1282", "start": 1276, "end": 1282},
+  {"id": "142", "suffix": "1282-1291", "start": 1282, "end": 1291},
+  {"id": "143", "suffix": "1291-1295", "start": 1291, "end": 1295},
+  {"id": "144", "suffix": "1295-1305", "start": 1295, "end": 1305},
+  {"id": "145", "suffix": "1305-1319", "start": 1305, "end": 1319},
+  {"id": "146", "suffix": "1319-1323", "start": 1319, "end": 1323},
+  {"id": "147", "suffix": "1323-1330", "start": 1323, "end": 1330},
+  {"id": "148", "suffix": "1330-1343", "start": 1330, "end": 1343},
+  {"id": "149", "suffix": "1343-1353", "start": 1343, "end": 1353},
+  {"id": "151", "suffix": "1353-1354", "start": 1353, "end": 1354},
+  {"id": "152", "suffix": "1354-1360", "start": 1354, "end": 1360},
+  {"id": "153", "suffix": "1360-1361", "start": 1360, "end": 1361},
+  {"id": "154", "suffix": "1361-1371", "start": 1361, "end": 1371},
+  {"id": "155", "suffix": "1371-1374", "start": 1371, "end": 1374},
+  {"id": "156", "suffix": "1374-1375", "start": 1374, "end": 1375},
+  {"id": "158", "suffix": "1375-1386", "start": 1375, "end": 1386},
+  {"id": "159", "suffix": "1386-1390", "start": 1386, "end": 1390},
+  {"id": "160", "suffix": "1391-1398", "start": 1391, "end": 1398},
+  {"id": "161", "suffix": "1398-1401", "start": 1398, "end": 1401},
+  {"id": "162", "suffix": "1401-1406", "start": 1401, "end": 1406},
+  {"id": "164", "suffix": "1406-1421", "start": 1406, "end": 1421},
+  {"id": "166", "suffix": "1421-1429", "start": 1421, "end": 1429},
+  {"id": "167", "suffix": "1429-1430", "start": 1429, "end": 1430},
+];

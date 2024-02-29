@@ -46,7 +46,7 @@
         <link rel="stylesheet" type="text/css" href="css/datepicker.css">
         <link rel="stylesheet" type="text/css" href="css/materialize.min.css">
         <link rel="stylesheet" type="text/css" href="css/index.css">
-        <title>Laridaar Santhiya</title>
+        <title>Read Gurbani</title>
         <script type="text/javascript" src="js/modernizr.custom.38654.js"></script>
     </head>
     <body>
@@ -67,10 +67,12 @@
                     <a href="javascript:void(0)" class="setting_2col smaller" id="zoom_out_button"><i class="fa fa-search-minus"></i></a>
                     <a href="javascript:void(0)" class="setting_2col bigger" id="zoom_in_button"><i class="fa fa-search-plus"></i></a>
                 </li>
-                <li><div><a href="javascript:openTatkaraGurmukhi()" id="homepage"><span class="lang_en">Index</span><span class="lang_pa">ਤਤਕਰਾ</span></a></div></li>
-                <li><div><span class="lang_en">Night Mode</span><span class="lang_pa">ਰਾਤ ਨੂੰ ਪ੍ਹੜਣ ਲਈ</span><a href="javascript:void(0)" class="setting checkbox secondary-content" data-setting="dark" id="night_mode_button"><i class="fa fa-square-o"></i></a></div></li>
-                <li><div><span class="lang_en">Swipe Navigation</span><span class="lang_pa">ਉਂਗਲ ਨਾਲ ਅੰਗ ਬਦਲਣ ਲਈ</span><a href="javascript:void(0)" class="setting checkbox secondary-content" data-setting="swipe_nav"><i class="fa fa-square-o"></i></a></div></li>
-                <li><div><span class="lang_en">Keep Awake</span><span class="lang_pa">ਸਕ੍ਰੀਨ ਜਾਰੀ ਰਖਣ ਲਈ</span><a href="javascript:void(0)" class="setting checkbox secondary-content" data-setting="keep_awake"><i class="fa fa-square-o"></i></a></div></li>
+                <div id="audio_stream"></div>
+                <li><div style="font-size: small; font-style: oblique;"><span class="lang_en">Playing: </span><span class="lang_pa">ਚਲਦਾ ਆਡੀਓ: </span><span id="now_playing"></span></div></li>
+                <li class="no-padding"><span id="audio_link_sp"></span></li>
+                <li class="no-padding"><span id="audio_link_bp"></span></li>
+                <li class="no-padding"><a href="javascript:openTatkaraGurmukhi()"><span class="lang_en">Index</span><span class="lang_pa">ਤਤਕਰਾ</span></a></li>
+                <li><div><span class="lang_en">Night Mode</span><span class="lang_pa">ਡਾਰਕ ਮੋਡ</span><a href="javascript:void(0)" class="setting checkbox secondary-content" data-setting="dark" id="night_mode_button"><i class="fa fa-square-o"></i></a></div></li>
                 <li><div><span class="lang_en">Larivaar</span><span class="lang_pa">ਲੜੀਵਾਰ</span><a href="javascript:void(0)" class="setting checkbox secondary-content" data-setting="larreevaar" id="larreevaar_setting"><i class="fa fa-square-o"></i></a></div></li>
                 <li><div><span class="lang_en">Traditional Larivaar</span><span class="lang_pa">ਪੁਰਾਤਨ ਲੜੀਵਾਰ</span><a href="javascript:void(0)" class="setting checkbox secondary-content" data-setting="linebreak" id="linebreak"><i class="fa fa-square-o"></i></a></div></li>
                 <li><div>
@@ -80,7 +82,7 @@
                         <span class="small-pause-color" style="font-size: small;">&nbsp;Short</span>
                     </span>
                     <span class="lang_pa">ਵਿਸ਼ਰਾਮ
-                        <span class="large-pause-color" style="font-size: small;">&nbsp;ਪੂਰਾ ਵਿਸ਼ਰਾਮ</span>
+                        <span class="large-pause-color" style="font-size: small;">&nbsp;ਵਿਸ਼ਰਾਮ</span>
                         <span class="medium-pause-color" style="font-size: small;">&nbsp;ਜਮਕੀ</span>
                         <span class="small-pause-color" style="font-size: small;">&nbsp;ਠਮਕੀ</span>                        
                     </span>
@@ -118,10 +120,11 @@
                         </li>
                     </ul>
                 </li>
-                <li><div><span class="lang_en">Left-Handed Mode</span><span class="lang_pa">ਖਬੇ ਹੱਥ ਨਾਲ ਵਰਤਣ ਲਈ</span><a href="javascript:void(0)" class="setting checkbox secondary-content" data-setting="lefthand"><i class="fa fa-square-o"></i></a></div></li>
-                <li class="no-padding">
-                    <a class="modal-trigger" href="#about"><span class="lang_en">About</span><span class="lang_pa">ਵਧੇਰੀ ਜਾਨਕਾਰੀ ਲਈ</span></a>
-                </li>
+                <li><div><span class="lang_en">Bold Font</span><span class="lang_pa">ਗੂੜ੍ ਅੱਖਰ</span><a href="javascript:void(0)" class="setting checkbox secondary-content" data-setting="bold_font" id="bold_font_setting"><i class="fa fa-square-o"></i></a></div></li>
+                <li><div><span class="lang_en">Punjabi</span><span class="lang_pa">ਪੰਜਾਬੀ</span><a href="javascript:void(0)" class="setting checkbox secondary-content" data-setting="is_punjabi" id="is_punjabi_setting"><i class="fa fa-square-o"></i></a></div></li>
+                <li><div><span class="lang_en">Swipe Navigation</span><span class="lang_pa">ਅੰਗ ਬਦਲਣ ਲਈ ਸਵਾਈਪ</span><a href="javascript:void(0)" class="setting checkbox secondary-content" data-setting="swipe_nav"><i class="fa fa-square-o"></i></a></div></li>
+                <li><div><span class="lang_en">Left-Handed Mode</span><span class="lang_pa">ਖਬੇ ਹੱਥ ਮੋਡ</span><a href="javascript:void(0)" class="setting checkbox secondary-content" data-setting="lefthand"><i class="fa fa-square-o"></i></a></div></li>
+                <li class="no-padding"><a class="modal-trigger" href="#about"><span class="lang_en">About</span><span class="lang_pa">ਵਧੇਰੀ ਜਾਨਕਾਰੀ</span></a></li>
             </ul>
             <a href="#" id="slide-out-button" data-activates="slide-out" class="button-collapse nav-toggle"><i class="mdi-navigation-menu"></i></a>
         </nav>
@@ -145,11 +148,8 @@
         <div id="about" class="modal">
           <div class="modal-content">
               <h4><a href="javascript:void(0)" class="modal-action modal-close"><i class="fa fa-close"></i></a></h4>
-              <p><b>ਲੜੀਵਾਰ ~ Larivaar</b> &#8212; serially, sequentially</p>
-              <p><em>"Larivaar katha of Sri Guru Granth Sahib Jee"</em></p>
-              <p><b>ਲੜੀਦਾਰ ~ Laridaar</b> &#8212; composed of or adorned with tassels, strands, chain-links, etc.</p>
-              <p><em>"Caligraphy written in Laridaar form"</em></p>
-              <hr>
+              <p><b>Read Gurbani</b> is a project by <b>Dear Father Brave Guru God's Slave Society</b>, commonly known as Gursevak.</p>
+              <p>Check out our website <a href="https://gursevak.com">Gursevak.com</a>!</p>
               <p>The Gurbani on this website has been reviewed by scholars of Damdami Taksal and is reflective of the paath taught in the Sikh sampradai tradition.</p>
               <p>This website is a fork of the open-source <a href="https://github.com/khalisfoundation/learn-larivaar" class="external-link">Learn Larivaar</a> project. We would like to acknowledge Khalis Foundation for their work on the original project.</p>
           </div>

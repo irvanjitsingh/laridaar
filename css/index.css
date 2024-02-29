@@ -61,7 +61,7 @@ html {
 }
 
 body {
-  background-color: #fff;
+  background-color: #ffffff;
   color: #333;
   font-size: 20px;
   line-height: 1;
@@ -172,9 +172,17 @@ a.corner_nav {
   font-size: 70%;
   color:#2AAAE2;
   font-weight: bold;
+  border-radius: 10px;
+}
+
+body.dark .ucharan_box {
   background-color: #1b1b1b;
   border: 1px solid #eeeeee;
-  border-radius: 10px;
+}
+
+body .ucharan_box {
+  background-color: #f1f0f0;
+  border: 1px solid #202020;
 }
 
 div.mangal_box {
@@ -222,8 +230,12 @@ span.beej_mantar_title {
   line-height: 20px;
 }
 
-.tatkara tr:nth-of-type(2n) {
+body.dark .tatkara tr:nth-of-type(2n) {
   background-color: #1b1b1b;
+}
+
+body .tatkara tr:nth-of-type(2n) {
+  background-color: #f1f0f0;
 }
 
 .tatkara .raul-marker {
@@ -245,7 +257,7 @@ span.beej_mantar_title {
 .difficulty-medium a.tatkara_bani,
 .difficulty-medium a.tatkara_bani:link,
 .difficulty-medium a.tatkara_bani:visited {
-  color:#ffe100;
+  color:#ebc400;
 }
 
 .difficulty-hard a.tatkara_bani,
@@ -371,16 +383,27 @@ div.ui-datepicker {
   padding: 50px 8px 8px;
 }
 
+#player {
+  margin-bottom: 0;
+}
+
 #ang {
   font-family: GurbaniAkhar;
   width: 75px;
 }
 
 #paatth {
-  font-family: Akaash;
   height: 100%;
   line-height: 1.4em;
   padding: 10px 0;
+}
+
+body.bold_font #paatth {
+  font-family: Akaash-Bold;
+}
+
+body #paatth {
+  font-family: Akaash;
 }
 
 #paatth.linebreak span,
@@ -452,7 +475,7 @@ div.ui-datepicker {
 #paatth.vishrams.larreevaar.larreevaar_assistance .small-pause,
 #paatth.vishrams.linebreak.larreevaar_assistance .small-pause,
 .small-pause-color {
-  color: #ffe100;
+  color: #ebc400;
 }
 
 #paatth.ucharan i#ucharan_tip {
@@ -564,9 +587,9 @@ nav a.button-collapse {
 .side-nav li,
 .side-nav a {
   color: #444;
-  font-size: inherit;
+  font-size: medium;
   height: auto;
-  line-height: 44px;
+  line-height: 35px;
 }
 
 .side-nav li:hover,
