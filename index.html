@@ -27,21 +27,22 @@
         <!-- Smart App Banner -->
         <link rel="stylesheet" type="text/css" href="css/jquery.smartbanner.css">
         <!-- <meta name="apple-itunes-app" content="app-id=000000000"> -->
-        <!-- <meta name="google-play-app" content="app-id=com.gursevak.sehajpaath"> -->
-        <!-- <meta name="author" content="Gursevak"> -->
-        <!-- Standard/Chrome pinned site -->
-        <link rel="manifest" href="manifest.json">
+        <!-- <meta name="google-play-app" content="app-id=com.gursevak.readgurbani"> -->
+        <meta name="author" content="Gursevak">
         <meta name="mobile-web-app-capable" content="yes">
-        <!-- <link rel="icon" sizes="192x192" href="icon-192.png"> -->
-        <!-- iOS pinned site -->
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="194x194" href="/favicon-194x194.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
         <link rel="manifest" href="/site.webmanifest">
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#163b91">
+        <meta name="apple-mobile-web-app-title" content="Read Gurbani">
+        <meta name="application-name" content="Read Gurbani">
+        <meta name="msapplication-TileColor" content="#2b5797">
+        <meta name="msapplication-TileImage" content="/mstile-144x144.png">
+        <meta name="theme-color" content="#ffffff">
         <meta name="apple-mobile-web-app-capable" content="yes">
-        <!-- MS pinned site -->
-        <!-- <meta name="msapplication-config" content="ieconfig.xml"> -->
-
         <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
         <link rel="stylesheet" type="text/css" href="css/datepicker.css">
         <link rel="stylesheet" type="text/css" href="css/materialize.min.css">
@@ -70,8 +71,22 @@
                 <div id="audio_stream"></div>
                 <li><div style="font-size: small; font-style: oblique;"><span class="lang_en">Playing: </span><span class="lang_pa">ਚਲਦਾ ਆਡੀਓ: </span><span id="now_playing"></span></div></li>
                 <li class="no-padding"><span id="audio_link_sp"></span></li>
+                <li class="no-padding"><span id="audio_link_kp"></span></li>
+                <li class="no-padding">
+                    <ul class="collapsible collapsible-accordion">
+                        <li>
+                            <a class="setting_progress_link collapsible-header">
+                                <span id="audio_link_kp_title"></span>
+                                <i class="secondary-content mdi-navigation-arrow-drop-down"></i>
+                            </a>
+                            <div class="collapsible-body">
+                                <ul id="audio_link_kp_more"></ul>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
                 <li class="no-padding"><span id="audio_link_bp"></span></li>
-                <li class="no-padding"><a href="javascript:openTatkaraGurmukhi()"><span class="lang_en">Index</span><span class="lang_pa">ਤਤਕਰਾ</span></a></li>
+                <li class="no-padding"><a href="javascript:openTatkaraGurmukhi(true)"><span class="lang_en">Index</span><span class="lang_pa">ਤਤਕਰਾ</span></a></li>
                 <li><div><span class="lang_en">Night Mode</span><span class="lang_pa">ਡਾਰਕ ਮੋਡ</span><a href="javascript:void(0)" class="setting checkbox secondary-content" data-setting="dark" id="night_mode_button"><i class="fa fa-square-o"></i></a></div></li>
                 <li><div><span class="lang_en">Larivaar</span><span class="lang_pa">ਲੜੀਵਾਰ</span><a href="javascript:void(0)" class="setting checkbox secondary-content" data-setting="larreevaar" id="larreevaar_setting"><i class="fa fa-square-o"></i></a></div></li>
                 <li><div><span class="lang_en">Traditional Larivaar</span><span class="lang_pa">ਪੁਰਾਤਨ ਲੜੀਵਾਰ</span><a href="javascript:void(0)" class="setting checkbox secondary-content" data-setting="linebreak" id="linebreak"><i class="fa fa-square-o"></i></a></div></li>
@@ -120,7 +135,7 @@
                         </li>
                     </ul>
                 </li>
-                <li><div><span class="lang_en">Bold Font</span><span class="lang_pa">ਗੂੜ੍ ਅੱਖਰ</span><a href="javascript:void(0)" class="setting checkbox secondary-content" data-setting="bold_font" id="bold_font_setting"><i class="fa fa-square-o"></i></a></div></li>
+                <li><div><span class="lang_en">Bold Font</span><span class="lang_pa">ਗੂੜ੍ ਅੱਖਰ</span><a href="javascript:void(0)" class="setting checkbox secondary-content" data-setting="bold_font" id="bold_font"><i class="fa fa-square-o"></i></a></div></li>
                 <li><div><span class="lang_en">Punjabi</span><span class="lang_pa">ਪੰਜਾਬੀ</span><a href="javascript:void(0)" class="setting checkbox secondary-content" data-setting="is_punjabi" id="is_punjabi_setting"><i class="fa fa-square-o"></i></a></div></li>
                 <li><div><span class="lang_en">Swipe Navigation</span><span class="lang_pa">ਅੰਗ ਬਦਲਣ ਲਈ ਸਵਾਈਪ</span><a href="javascript:void(0)" class="setting checkbox secondary-content" data-setting="swipe_nav"><i class="fa fa-square-o"></i></a></div></li>
                 <li><div><span class="lang_en">Left-Handed Mode</span><span class="lang_pa">ਖਬੇ ਹੱਥ ਮੋਡ</span><a href="javascript:void(0)" class="setting checkbox secondary-content" data-setting="lefthand"><i class="fa fa-square-o"></i></a></div></li>
@@ -148,10 +163,23 @@
         <div id="about" class="modal">
           <div class="modal-content">
               <h4><a href="javascript:void(0)" class="modal-action modal-close"><i class="fa fa-close"></i></a></h4>
-              <p><b>Read Gurbani</b> is a project by <b>Dear Father Brave Guru God's Slave Society</b>, commonly known as Gursevak.</p>
-              <p>Check out our website <a href="https://gursevak.com">Gursevak.com</a>!</p>
-              <p>The Gurbani on this website has been reviewed by scholars of Damdami Taksal and is reflective of the paath taught in the Sikh sampradai tradition.</p>
-              <p>This website is a fork of the open-source <a href="https://github.com/khalisfoundation/learn-larivaar" class="external-link">Learn Larivaar</a> project. We would like to acknowledge Khalis Foundation for their work on the original project.</p>
+              <h5>About this Website</h5>
+              <p>Read Gurbani is a project by <b>Dear Father Brave Guru God's Slave Society</b> (also known as <b>Gursevak</b>), a charity started by students of Bhagat Jaswant Singh Ji Dauder Wale 'Bhagat Ji'. Bhagat Ji is a student of Sant Giani Gurbachan Singh Ji Bhindranwale.</p>
+              <p>To learn more about the charity and Bhagat Ji, check out our website: <a href="https://gursevak.com">gursevak.com</a>.</p>
+              <p>This website is designed to allow individuals of all levels to practice reading Gurbani (abhiaas) via Sehaj Paath (reading the entirety of Siri Guru Granth Sahib Ji). Check out the help section to learn how to use all of the features.</p>
+              <h5>Acknowledgments</h5>
+              <p>The content on this website has been reviewed by various scholars of the Sikh sampradai tradition:</p>
+              <p><b>Gurbani Paath: </b>The Gurbani paath is from a source file that was reviewed by Bhagat Ji. The source file they used was previously reviewed by Baba Darshan Singh Ji Mallewal Wale, who is another student of Sant Gurbachan Singh Ji.</p>
+              <p><b>Pathantar and Vishrams: </b>The Pathantar and Vishrams are from Bhagat Ji's 'Vishram Pothi'.</p>
+              <p><b>Sehaj Paath Audio: </b>The audio recording is of Bhagat Ji. The audio hosting is provided by sevadars of Akaal Design.</p>
+              <p><b>Katha Audio: </b>The audio recording is of Sant Gurbachan Singh Ji. The audio was recorded by Bhagat Ji and is hosted on GurmatVeechar.com</p>
+              <p><b>Website: </b>The source code for this website is a fork of Learn Larivaar, an open-source project by sevadars of Khalis Foundation. The Gurbani fonts used were provided by Dr. Kulbir Singh Thind. Hosting is provided by sevadars of Akaal Design.</p>
+              <p>We would like to acknowledge the contributions of all of the above mentioned scholars, organizations and unnamed volunteers and are grateful for their seva.</p>
+              <h5>Satkaar of Gurbani</h5>
+              <p>We humbly ask that you treat the Gurbani on the screen with respect. Please remove your shoes and socks, cover your head, and ensure that your device, hands and feet are clean. Be conscious of where and how you use your device when not reading and if possible, use a dedicated device.</p>
+              <h5>Preserving Puratan Traditions</h5>
+              <p>Although there are benefits of using technology as a learning aid, we strongly encourage the sangat to do parkash of a physical Senchi Sahib whenever possible, and to learn Gurbani Santhiya from a learned Ustaad, preferrably in person.</p>
+              <p>We should not build a dependence on technology or the web, rather we should work towards being able to independently and fluently read Gurbani with shudh ucharan from a Senchi Sahib or Saroop, and also try and memorize as much Gurbani as possible.</p>
           </div>
         </div>
         <div class="app">
@@ -161,6 +189,8 @@
         <div class="side-nav-back"></div>
         <div id="nav_back"></div>
         <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="katha_audio.js"></script>
+        <script type="text/javascript" src="santhiya_audio.js"></script>
         <script type="text/javascript" src="js/jquery-3.7.1.min.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript" src="js/jquery.smartbanner.js" id="smartbannerscript"></script>

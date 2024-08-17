@@ -1,13 +1,11 @@
 {
+  "background_color": "#FFF",
+  "display": "standalone",
   "name": "Read Gurbani",
-  "icons": [
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "density": "4.0"
-    }
-  ],
-  "start_url": "/",
-  "display": "standalone"
+  "short_name": "Read Gurbani",
+  "version": "com.gursevak.readgurbani",
+  "description": "Practice reading Gurbani through Sehaj Paath",
+  "icons": [],
+  "start_url": "index.html",
+  "theme_color": "#ffffff"
 }

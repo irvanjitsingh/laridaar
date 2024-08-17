@@ -39,12 +39,23 @@ body {
 
 @font-face {
   font-family: Akaash;
+  font-weight: bold;
   src: url("../fonts/Akaash.ttf");
 }
 
 @font-face {
   font-family: Akaash-Bold;
   src: url("../fonts/Akaash-Bold.ttf");
+}
+
+@font-face {
+  font-family: Oankaar;
+  src: url("../fonts/Oankaar.ttf");
+}
+
+@font-face {
+  font-family: GuruGranthUni;
+  src: url("../fonts/GuruGranthUni.ttf");
 }
 
 @font-face {
@@ -171,7 +182,6 @@ a.corner_nav {
   padding-bottom: 5px;
   font-size: 70%;
   color:#2AAAE2;
-  font-weight: bold;
   border-radius: 10px;
 }
 
@@ -201,16 +211,10 @@ div.mangal_box {
   padding-top: 30px;
 }
 
-span.beej_mantar_title {
-  vertical-align: .4em;
-  /* vertical-align: 112%; */
-  line-height: 36%;
-  /* line-height: .4em; */
+body span.beej_mantar_title {
 }
 
-#paatth.larreevaar span.beej_mantar_title,
-#paatth.linebreak span.beej_mantar_title {
-  margin-right: -1.05em;
+body.bold_font span.beej_mantar_title {
 }
 
 .tatkara {
@@ -393,13 +397,14 @@ div.ui-datepicker {
 }
 
 #paatth {
+  font-family: GuruGranthUni;
   height: 100%;
   line-height: 1.4em;
   padding: 10px 0;
 }
 
 body.bold_font #paatth {
-  font-family: Akaash-Bold;
+  font-family: GuruGranthUni;
 }
 
 body #paatth {
@@ -416,25 +421,27 @@ body #paatth {
   margin-right: 0;
 }
 
-/* spacing between pangtis */
-#paatth.larreevaar i {
-  padding-left: .25em;
-  padding-right: .25em;
-}
-
 /* join hadh with pangti as per traditional larivaar */
-#paatth.linebreak i {
+body #paatth.larreevaar i,
+body #paatth.linebreak i {
   margin-left: -.15em;
   margin-right: -.15em;
 }
 
-#paatth.larreevaar span#beej_mantar,
-#paatth.linebreak span#beej_mantar {
-  margin-right: -.2em;
+body.bold_font #paatth.larreevaar i,
+body.bold_font #paatth.linebreak i {
+  margin-left: -.1em;
+  margin-right: -.07em;
 }
 
-#paatth span.sirlekh_subscript {
-  font-size: 60%;
+body .mangal_box span#beej_mantar {
+  font-family: Oankaar;
+  font-weight: normal;
+}
+
+body.bold_font .mangal_box span#beej_mantar {
+  font-family: Oankaar;
+  font-weight: bold;
 }
 
 #paatth:after {
@@ -493,8 +500,6 @@ body #paatth {
 
 /* ***** ABOUT ***** */
 #about {
-  background: #fff !important;
-  color: #333 !important;
   font-size: 1rem;
 }
 
