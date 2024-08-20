@@ -11,8 +11,8 @@ var daily_total           = 0;
 var swipe_nav             = window.localStorage["swipe_nav"]              || 0;
 var larreevaar            = window.localStorage["larreevaar"]             || 0;
 var larreevaar_assistance = window.localStorage["larreevaar_assistance"]  || 0;
-var linebreak             = window.localStorage["linebreak"]              || 0;
-var vishrams              = window.localStorage["vishrams"]               || 1;
+var linebreak             = window.localStorage["linebreak"]              || 1;
+var vishrams              = window.localStorage["vishrams"]               || 0;
 var ucharan               = window.localStorage["ucharan"]                || 0;
 var bold_font             = window.localStorage["bold_font"]              || 1;
 var is_punjabi            = window.localStorage["punjabi"]                || 0;
@@ -23,8 +23,6 @@ var backButtonClose       = false;
 var isOnline              = false;
 var lefthand              = window.localStorage["lefthand"]               || 0;
 var isDefaultAudio        = window.localStorage["is_default_audio"]       || 1;
-var isWebkit              = navigator.userAgent.indexOf('AppleWebKit') != -1
-var isChromium            = navigator.userAgent.indexOf('Chromium') != -1
 
 document.addEventListener("deviceready", onDeviceReady, false);
 function onDeviceReady() {
@@ -303,11 +301,7 @@ function setAng(set_ang, store) {
     .replace(/ਂੀ/g,'\u0A40\uF03D') // ਂ+ੀ
     .replace(/ੰੀ/g,'\u0A40\uF034') // ੰ+ੀ
     .replace(/\u0A72\u0A40\uF03D/g,'\u0A08\uF03D') // ਂ+ਈ
-    .replace(/\u0A72\u0A40\uF034/g,'\u0A08\uF034') // ੰ+ਈ
-    .replace(/ੑੁ/g,'\uF040')
-    .replace(/ੑੂ/g,'\uF041')
-    .replace(/ੵੁ/g,'\uF043')
-    .replace(/ੵੂ/g,'\uF044');
+    .replace(/\u0A72\u0A40\uF034/g,'\u0A08\uF034'); // ੰ+ਈ
 
     var isTitleMangal = titleMangalAngList.includes(set_ang);
     var isLinebreak = $("#paatth").hasClass("linebreak");
@@ -358,9 +352,9 @@ function setAng(set_ang, store) {
         }
 
         // full mool mantar
-        if (set_ang == 1 && index < 4) {
-          pangti = `$${pangti}$`;
-        }
+        // if (set_ang == 1 && index < 4) {
+        //   pangti = `$${pangti}$`;
+        // }
 
         words = pangti.split(' ');
 
@@ -414,7 +408,9 @@ function setAng(set_ang, store) {
         ucharanTip = '';
         if (firstChar == '{') {
           word = val.replace(ucharan_regex,'');
-          ucharanTip = (val.split("{")[1] ||"").split("}")[0].replace(/_/g, " ");
+          ucharanTip = (val.split('{')[1] || '').split('}')[0]
+          .replace(/_/g, ' ')
+          .replace(/([₁-₈]+)/g, '');
           firstChar = word.at(0);
           hasUcharan = true;
         }
@@ -493,8 +489,6 @@ function setAng(set_ang, store) {
         }
 
         // sirlekh surtaal ank subscripts
-        ucharanTip = ucharanTip
-        .replace(/([₁-₈]+)/g, '');
         word = word
         .replace('₁₅', '\uF051')
         .replace('₁', '\uF04A')
@@ -530,12 +524,9 @@ function setAng(set_ang, store) {
     setPaathBodhAngRange(ang);
     setKathaAngs(ang);
 
-    //Check for bookmark, insert it and scroll to
+    //Check for bookmark and insert it
     if (bookmark_ang == ang && bookmark_index > -1) {
       $("#paatth *").eq(bookmark_index).after($("<i></i>").addClass("fa fa-bookmark"));
-      window.scrollTo(0,$('i.fa.fa-bookmark').offset().top-58);
-    } else {
-      window.scrollTo(0,0);
     }
   });
   if (store === true) {
@@ -550,7 +541,7 @@ function setAng(set_ang, store) {
     }
   } else {
     //Loading for the first time
-    //Check for bookmark, insert it and scroll to
+    //Check for bookmark and insert it
     if (bookmark_ang == ang && bookmark_index > -1) {
       $("#paatth *").eq(bookmark_index).after($("<i></i>").addClass("fa fa-bookmark"));
     }
@@ -778,17 +769,11 @@ $(function() {
     font_size += 1;
     $("#paatth").css("font-size", font_size + "px");
     window.localStorage["font_size"] = font_size;
-    if (isWebkit && $("#paatth").hasClass("linebreak")) {
-      init();
-    }
   });
   $(".smaller").click(function () {
     font_size -= 1;
     $("#paatth").css("font-size", font_size + "px");
     window.localStorage["font_size"] = font_size;
-    if (isWebkit && $("#paatth").hasClass("linebreak")) {
-      init();
-    }
   });
   //CHANGE ANG
   $(".ang").blur(function() {
@@ -846,7 +831,6 @@ $(function() {
           break;
         case "ucharan":
           $("#paatth").addClass(setting);
-          ucharan = 1;
           break;
         case "swipe_nav":
           swipe_nav = 1;
@@ -858,7 +842,6 @@ $(function() {
           break;
         case "bold_font":
           $("body").addClass(setting);
-          bold_font = 1;
           break;
         case "is_punjabi":
           toggleLanguage("pa");
@@ -891,7 +874,6 @@ $(function() {
           break;
         case "ucharan":
           $("#paatth").removeClass(setting);
-          ucharan = 0;
           break;
         case "swipe_nav":
           swipe_nav = 0;
@@ -903,7 +885,6 @@ $(function() {
           break;
         case "bold_font":
           $("body").removeClass(setting);
-          bold_font = 0;
           break;
         case "is_punjabi":
           toggleLanguage("en");
